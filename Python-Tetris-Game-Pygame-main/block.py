@@ -1,4 +1,4 @@
-from colors import Colors
+from settings import *
 import pygame
 from position import Position
 
@@ -11,7 +11,7 @@ class Block:
         self.row_offset = 0  # Vertical offset for positioning the block in the grid
         self.column_offset = 0  # Horizontal offset for positioning the block in the grid
         self.rotation_state = 0  # Current rotation state of the block
-        self.colors = Colors.get_cell_colors()  # Get the colors for the block from the Colors class
+        self.colors = colors.get_cell_colors()  # Get the colors for the block from the colors class
 
     def move(self, rows, columns):
         # Move the block by a specified number of rows and columns.

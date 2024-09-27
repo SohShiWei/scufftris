@@ -1,5 +1,5 @@
 import pygame
-from colors import Colors
+from settings import *
 
 class Grid:
     def __init__(self):
@@ -9,8 +9,8 @@ class Grid:
         self.cell_size = 30
         # Create a 2D list representing the grid, initialized with 0 (empty cells).
         self.grid = [[0 for j in range(self.num_cols)] for i in range(self.num_rows)]
-        # Get the colors for the cells from an external Colors class.
-        self.colors = Colors.get_cell_colors()
+        # Get the colors for the cells from an external colors class.
+        self.colors = colors.get_cell_colors()
 
     def print_grid(self):
         # Prints the current state of the grid to the console for debugging.
@@ -74,4 +74,4 @@ class Grid:
                 cell_rect = pygame.Rect(column * self.cell_size + 11, row * self.cell_size + 11,
                                         self.cell_size - 1, self.cell_size - 1)
                 # Draw the rectangle on the screen with the appropriate color
-                pygame.draw.rect(screen, Colors.BLACK, cell_rect)
+                pygame.draw.rect(screen, colors.BLACK, cell_rect)
