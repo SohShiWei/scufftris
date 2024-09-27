@@ -9,9 +9,9 @@ title_font = pygame.font.Font(None, 40)  # Font for titles (e.g., "Score", "Next
 menu_font = pygame.font.Font(None, 30)  # Font for the pause menu
 
 # Render static text surfaces for "Score", "Next", and "GAME OVER"
-score_surface = title_font.render("Score", True, Colors.white)
-next_surface = title_font.render("Next", True, Colors.white)
-game_over_surface = title_font.render("GAME OVER", True, Colors.white)
+score_surface = title_font.render("Score", True, Colors.BLACK)
+next_surface = title_font.render("Next", True, Colors.BLACK)
+game_over_surface = title_font.render("GAME OVER", True, Colors.BLACK)
 
 # Rectangles for positioning the score and next block sections
 score_rect = pygame.Rect(320, 55, 170, 60)  # Score box on the right of the screen
@@ -44,20 +44,20 @@ click_delay = 300  # Delay between mouse clicks (in milliseconds)
 
 def pause_menu():
     # Function to display the pause menu
-    screen.fill(Colors.dark_blue)  # Fill the screen with dark blue background
+    screen.fill(Colors.BLUE)  # Fill the screen with dark blue background
     
     # Render pause menu options (Resume, Quit, Speed adjustment)
-    resume_surface = menu_font.render("Resume", True, Colors.white)
-    back_to_menu_surface = menu_font.render("Back to menu", True, Colors.white)
-    quit_surface = menu_font.render("Quit", True, Colors.white)
+    resume_surface = menu_font.render("Resume", True, Colors.BLACK)
+    back_to_menu_surface = menu_font.render("Back to menu", True, Colors.BLACK)
+    quit_surface = menu_font.render("Quit", True, Colors.BLACK)
     #drop down speed
-    speed_surface = menu_font.render(f"Speed: {speed}", True, Colors.white)
-    decrease_speed_surface = menu_font.render("slower", True, Colors.white)
-    increase_speed_surface = menu_font.render("faster", True, Colors.white)
+    speed_surface = menu_font.render(f"Speed: {speed}", True, Colors.BLACK)
+    decrease_speed_surface = menu_font.render("slower", True, Colors.BLACK)
+    increase_speed_surface = menu_font.render("faster", True, Colors.BLACK)
     #block moving speed
-    move_surface = menu_font.render(f"Movement: {move_delay}", True, Colors.white)
-    decrease_move_surface = menu_font.render("slower", True, Colors.white)
-    increase_move_surface = menu_font.render("faster", True, Colors.white)
+    move_surface = menu_font.render(f"Movement: {move_delay}", True, Colors.BLACK)
+    decrease_move_surface = menu_font.render("slower", True, Colors.BLACK)
+    increase_move_surface = menu_font.render("faster", True, Colors.BLACK)
     
     # Position the menu options
     resume_rect = resume_surface.get_rect(center=(250, 200))
@@ -90,13 +90,13 @@ def pause_menu():
 
 def main_menu():
     while True:
-        screen.fill(Colors.dark_blue)  # Fill the background color
+        screen.fill(Colors.BLUE)  # Fill the background color
         title_font = pygame.font.Font(None, 74)  # Set up a font for the menu title
         menu_font = pygame.font.Font(None, 50)  # Set up a font for the menu options
         
-        title_surface = title_font.render("Tetris", True, Colors.white)
-        start_surface = menu_font.render("1. Start Game", True, Colors.white)
-        quit_surface = menu_font.render("2. Quit", True, Colors.white)
+        title_surface = title_font.render("Tetris", True, Colors.BLACK)
+        start_surface = menu_font.render("1. Start Game", True, Colors.BLACK)
+        quit_surface = menu_font.render("2. Quit", True, Colors.BLACK)
         
         screen.blit(title_surface, (200, 200))  # Draw the title
         screen.blit(start_surface, (200, 300))  # Draw the "Start Game" option
@@ -157,9 +157,9 @@ while True:
                 move_down_timer = current_time
 
         # Drawing the game state
-        score_value_surface = title_font.render(str(game.score), True, Colors.white)  # Render current score
+        score_value_surface = title_font.render(str(game.score), True, Colors.BLACK)  # Render current score
         
-        screen.fill(Colors.dark_blue)  # Clear the screen with the background color
+        screen.fill(Colors.CREAM)  # Clear the screen with the background color
         screen.blit(score_surface, (365, 20, 50, 50))  # Draw the "Score" title
         screen.blit(next_surface, (375, 180, 50, 50))  # Draw the "Next" title for the next block preview
 
@@ -167,10 +167,10 @@ while True:
             screen.blit(game_over_surface, (320, 450, 50, 50))
 
         # Draw rectangles for score and next block areas
-        pygame.draw.rect(screen, Colors.light_blue, score_rect, 0, 10)
+        pygame.draw.rect(screen, Colors.BLACK, score_rect, 0, 10)
         # Display the score inside the score rectangle
         screen.blit(score_value_surface, score_value_surface.get_rect(centerx=score_rect.centerx, centery=score_rect.centery))
-        pygame.draw.rect(screen, Colors.light_blue, next_rect, 0, 10)  # Draw the rectangle for the next block preview
+        pygame.draw.rect(screen, Colors.BLACK, next_rect, 0, 10)  # Draw the rectangle for the next block preview
         game.draw(screen)  # Draw the current state of the game (grid and blocks)
 
         pygame.display.update()  # Update the display

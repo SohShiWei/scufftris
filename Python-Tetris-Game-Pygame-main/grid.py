@@ -74,4 +74,4 @@ class Grid:
                 cell_rect = pygame.Rect(column * self.cell_size + 11, row * self.cell_size + 11,
                                         self.cell_size - 1, self.cell_size - 1)
                 # Draw the rectangle on the screen with the appropriate color
-                pygame.draw.rect(screen, self.colors[cell_value], cell_rect)
+                pygame.draw.rect(screen, Colors.BLACK, cell_rect)
