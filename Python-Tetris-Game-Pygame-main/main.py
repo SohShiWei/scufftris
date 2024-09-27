@@ -5,11 +5,11 @@ from settings import *  # Import a custom colors class that stores various color
 pygame.init()  # Initialize the pygame module
 
 # Fonts and text surfaces for rendering on the screen
-title_font = pygame.font.Font(None, 40)  # Font for titles (e.g., "Score", "Next")
-menu_font = pygame.font.Font(None, 30)  # Font for the pause menu
+title_font = pygame.font.Font(FONT_PATH, 30)  # Font for titles (e.g., "Score", "Next")
+menu_font = pygame.font.Font(FONT_PATH, 30)  # Font for the pause menu
 
 # Render static text surfaces for "Score", "Next", and "GAME OVER"
-score_surface = title_font.render("Score", True, colors.BLACK)
+score_surface = title_font.render("SCORE", True, colors.BLACK)
 next_surface = title_font.render("Next", True, colors.BLACK)
 game_over_surface = title_font.render("GAME OVER", True, colors.BLACK)
 
@@ -157,7 +157,7 @@ while True:
                 move_down_timer = current_time
 
         # Drawing the game state
-        score_value_surface = title_font.render(str(game.score), True, colors.BLACK)  # Render current score
+        score_value_surface = title_font.render(str(game.score), True, colors.WHITE)  # Render current score
         
         screen.fill(colors.CREAM)  # Clear the screen with the background color
         screen.blit(score_surface, (365, 20, 50, 50))  # Draw the "Score" title

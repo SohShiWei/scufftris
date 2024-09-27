@@ -11,7 +11,6 @@ class Game:
         self.blocks = [IBlock(), JBlock(), LBlock(), OBlock(), SBlock(), TBlock(), ZBlock()]
         self.current_block = self.get_random_block()  # The block currently falling
         self.next_block = self.get_random_block()  # The block to appear after the current one
-        self.hold_block = 0
         self.game_over = False  # A flag to track if the game is over
         self.score = 0  # Keeps track of the player's score
         
