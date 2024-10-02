@@ -1,7 +1,8 @@
 from grid import Grid 
 from blocks import *  # Importing different tetromino (block) shapes
-import random  
-import pygame  
+from settings import *
+from colors import Colors
+import random, sys
 
 class Game:
     def __init__(self):
@@ -15,13 +16,65 @@ class Game:
         self.score = 0  # Keeps track of the player's score
         
         # Load sounds for rotating blocks and clearing rows
-        self.rotate_sound = pygame.mixer.Sound("Sounds/rotate.ogg")
+        self.rotate_sound = pygame.mixer.Sound("Sounds/rotate.wav")
         self.clear_sound = pygame.mixer.Sound("Sounds/clear.ogg")
 
         # Load and play background music on loop
         pygame.mixer.music.load("Sounds/music.ogg")
         pygame.mixer.music.play(-1)  # -1 means the music loops indefinitely
+        pygame.mixer.music.set_volume(0.3) # Set the volume of the background music
+        
+    def play(self, screen):
+        # Main game loop (runs continuously)
+        clock = pygame.time.Clock()
+        self.paused = False # Flag to track if the game is paused
+        
+        # Custom user event for updating the game every few milliseconds
+        GAME_UPDATE = pygame.USEREVENT
+        pygame.time.set_timer(GAME_UPDATE, speed) # Set the event to trigger every `speed` milliseconds
+        # Initialize timers for controlling movement (left, right, down)
+        move_left_timer, move_right_timer, move_down_timer = 0, 0, 0
+        move_delay = 100 # Delay (in milliseconds) to prevent continuous movement when holding keys
+        
+        while True:
+            current_time = pygame.time.get_ticks()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_p:
+                        self.paused = not self.paused
+                    if not self.paused and not self.game_over:
+                        if event.key == controls['rotate']:
+                            self.rotate()
+                if event.type == GAME_UPDATE and not self.paused and not self.game_over:
+                    self.move_down()
 
+            if not self.paused and not self.game_over:
+                keys = pygame.key.get_pressed()
+                if (keys[controls['left']]) and current_time - move_left_timer > move_delay:
+                    self.move_left()
+                    move_left_timer = current_time
+                if (keys[controls['right']]) and current_time - move_right_timer > move_delay:
+                    self.move_right()
+                    move_right_timer = current_time
+                if (keys[controls['down']]) and current_time - move_down_timer > move_delay:
+                    self.move_down()
+                    self.update_score(0, 1)
+                    move_down_timer = current_time
+
+            # Draw game state
+            screen.fill(Colors.dark_blue)
+            self.draw(screen)
+            
+            # Blit game_screen onto the main screen
+            main_screen = pygame.display.get_surface()
+            main_screen.blit(screen, (0, 0))
+
+            pygame.display.update()
+            clock.tick(FPS)
+    
     def update_score(self, lines_cleared, move_down_points):
         # Updates the score based on the number of lines cleared and points for moving blocks down
         if lines_cleared == 1:
