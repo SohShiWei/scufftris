@@ -15,7 +15,7 @@ class Game:
         self.score = 0  # Keeps track of the player's score
         
         # Load sounds for rotating blocks and clearing rows
-        self.rotate_sound = pygame.mixer.Sound("Sounds/rotate.ogg")
+        self.rotate_sound = pygame.mixer.Sound("Sounds/rotate.wav")
         self.clear_sound = pygame.mixer.Sound("Sounds/clear.ogg")
 
         # Load and play background music on loop

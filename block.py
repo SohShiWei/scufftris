@@ -1,5 +1,5 @@
+from settings import *
 from colors import Colors
-import pygame
 from position import Position
 
 class Block:
