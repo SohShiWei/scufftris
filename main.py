@@ -1,12 +1,19 @@
 import pygame, sys  # Importing pygame for game rendering and sys for system exit
 from game import Game  # Import the Game class which contains the Tetris game logic
 from settings import *  # Import a custom colors class that stores various color values
-
+import settings
 pygame.init()  # Initialize the pygame module
 
 # Fonts and text surfaces for rendering on the screen
 title_font = pygame.font.Font(FONT_PATH, 30)  # Font for titles (e.g., "Score", "Next")
 menu_font = pygame.font.Font(FONT_PATH, 30)  # Font for the pause menu
+
+controls = {
+    'left': pygame.K_LEFT,
+    'right': pygame.K_RIGHT,
+    'down': pygame.K_DOWN,
+    'rotate': pygame.K_UP
+}
 
 # Render static text surfaces for "Score", "Next", and "GAME OVER"
 score_surface = title_font.render("SCORE", True, colors.BLACK)
@@ -96,11 +103,13 @@ def main_menu():
         
         title_surface = title_font.render("TETRIS", True, colors.BLACK)
         start_surface = menu_font.render("1. START GAME", True, colors.BLACK)
-        quit_surface = menu_font.render("2. QUIT", True, colors.BLACK)
+        settings_surface = menu_font.render("2. SETTINGS",True,colors.BLACK)
+        quit_surface = menu_font.render("3. QUIT", True, colors.BLACK)
         
-        screen.blit(title_surface, (100, 100))  # Draw the title
+        screen.blit(title_surface, (100, 200))  # Draw the title
         screen.blit(start_surface, (50, 300))  # Draw the "Start Game" option
-        screen.blit(quit_surface, (50, 375))  # Draw the "Quit" option
+        screen.blit(settings_surface, (50, 350))
+        screen.blit(quit_surface, (50, 400))  # Draw the "Quit" option
 
         pygame.display.update()  # Update the display
 
@@ -112,6 +121,9 @@ def main_menu():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:  # Start game on pressing '1'
                     return  # Exit the menu loop and start the game
+                if event.key == pygame.K_2:
+                    settings.handle_settings(screen,controls)
+                    return
                 if event.key == pygame.K_2:  # Quit game on pressing '2'
                     pygame.quit()
                     sys.exit()
@@ -132,9 +144,8 @@ while True:
             if not paused:  # If the game isn't paused
                 if game.game_over:  # Reset the game if it's over
                     game.game_over = False
-                    pygame.time.wait(500)
                     game.reset()
-                if event.key == pygame.K_UP or event.key == pygame.K_SPACE:  # Rotate the block with UP or SPACE
+                if event.key == controls['rotate']:  # Rotate the block with UP or SPACE
                     game.rotate()
         if event.type == GAME_UPDATE and not game.game_over and not paused:
             game.move_down()  # Automatically move the block down on the GAME_UPDATE event
@@ -144,15 +155,15 @@ while True:
         keys = pygame.key.get_pressed()  # Get the state of all keyboard keys
         if not game.game_over:  # Only allow movement if the game is not over
             # Move block left (left arrow key or 'A') with debounce
-            if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and current_time - move_left_timer > move_delay:
+            if (keys[controls['left']]) and current_time - move_left_timer > move_delay:
                 game.move_left()
                 move_left_timer = current_time
             # Move block right (right arrow key or 'D') with debounce
-            if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and current_time - move_right_timer > move_delay:
+            if (keys[controls['right']]) and current_time - move_right_timer > move_delay:
                 game.move_right()
                 move_right_timer = current_time
             # Move block down (down arrow key or 'S') with debounce
-            if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and current_time - move_down_timer > move_delay:
+            if (keys[controls['down']]) and current_time - move_down_timer > move_delay:
                 game.move_down()
                 game.update_score(0, 1)  # Update score when moving down
                 move_down_timer = current_time
