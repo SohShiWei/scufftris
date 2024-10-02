@@ -10,7 +10,7 @@ menu_font = pygame.font.Font(FONT_PATH, 30)  # Font for the pause menu
 
 # Render static text surfaces for "Score", "Next", and "GAME OVER"
 score_surface = title_font.render("SCORE", True, colors.BLACK)
-next_surface = title_font.render("Next", True, colors.BLACK)
+next_surface = title_font.render("NEXT", True, colors.BLACK)
 game_over_surface = title_font.render("GAME OVER", True, colors.BLACK)
 
 # Rectangles for positioning the score and next block sections
@@ -47,17 +47,17 @@ def pause_menu():
     screen.fill(colors.BLUE)  # Fill the screen with dark blue background
     
     # Render pause menu options (Resume, Quit, Speed adjustment)
-    resume_surface = menu_font.render("Resume", True, colors.BLACK)
-    back_to_menu_surface = menu_font.render("Back to menu", True, colors.BLACK)
-    quit_surface = menu_font.render("Quit", True, colors.BLACK)
+    resume_surface = menu_font.render("RESUME", True, colors.BLACK)
+    back_to_menu_surface = menu_font.render("BACK TO MENU", True, colors.BLACK)
+    quit_surface = menu_font.render("QUIT", True, colors.BLACK)
     #drop down speed
-    speed_surface = menu_font.render(f"Speed: {speed}", True, colors.BLACK)
-    decrease_speed_surface = menu_font.render("slower", True, colors.BLACK)
-    increase_speed_surface = menu_font.render("faster", True, colors.BLACK)
+    speed_surface = menu_font.render(f"SPEED: {speed}", True, colors.BLACK)
+    decrease_speed_surface = menu_font.render("SLOWER", True, colors.BLACK)
+    increase_speed_surface = menu_font.render("FASTER", True, colors.BLACK)
     #block moving speed
-    move_surface = menu_font.render(f"Movement: {move_delay}", True, colors.BLACK)
-    decrease_move_surface = menu_font.render("slower", True, colors.BLACK)
-    increase_move_surface = menu_font.render("faster", True, colors.BLACK)
+    move_surface = menu_font.render(f"MOVEMENT: {move_delay}", True, colors.BLACK)
+    decrease_move_surface = menu_font.render("SLOWER", True, colors.BLACK)
+    increase_move_surface = menu_font.render("FASTER", True, colors.BLACK)
     
     # Position the menu options
     resume_rect = resume_surface.get_rect(center=(250, 200))
@@ -65,12 +65,12 @@ def pause_menu():
     quit_rect = quit_surface.get_rect(center=(250, 250))
     #drop down speed
     speed_rect = speed_surface.get_rect(center=(250, 300))
-    decrease_speed_rect = decrease_speed_surface.get_rect(center=(200, 350))
-    increase_speed_rect = increase_speed_surface.get_rect(center=(300, 350))
+    decrease_speed_rect = decrease_speed_surface.get_rect(center=(150, 350))
+    increase_speed_rect = increase_speed_surface.get_rect(center=(350, 350))
     #block moving speed
     move_rect = speed_surface.get_rect(center=(225, 400))
-    decrease_move_rect = decrease_speed_surface.get_rect(center=(200, 450))
-    increase_move_rect = increase_speed_surface.get_rect(center=(300, 450))
+    decrease_move_rect = decrease_speed_surface.get_rect(center=(150, 450))
+    increase_move_rect = increase_speed_surface.get_rect(center=(350, 450))
     
     # Display the menu options on the screen
     screen.blit(resume_surface, resume_rect)
@@ -91,16 +91,16 @@ def pause_menu():
 def main_menu():
     while True:
         screen.fill(colors.BLUE)  # Fill the background color
-        title_font = pygame.font.Font(None, 74)  # Set up a font for the menu title
-        menu_font = pygame.font.Font(None, 50)  # Set up a font for the menu options
+        title_font = pygame.font.Font(FONT_PATH, 74)  # Set up a font for the menu title
+        menu_font = pygame.font.Font(FONT_PATH, 50)  # Set up a font for the menu options
         
-        title_surface = title_font.render("Tetris", True, colors.BLACK)
-        start_surface = menu_font.render("1. Start Game", True, colors.BLACK)
-        quit_surface = menu_font.render("2. Quit", True, colors.BLACK)
+        title_surface = title_font.render("TETRIS", True, colors.BLACK)
+        start_surface = menu_font.render("1. START GAME", True, colors.BLACK)
+        quit_surface = menu_font.render("2. QUIT", True, colors.BLACK)
         
-        screen.blit(title_surface, (200, 200))  # Draw the title
-        screen.blit(start_surface, (200, 300))  # Draw the "Start Game" option
-        screen.blit(quit_surface, (200, 350))  # Draw the "Quit" option
+        screen.blit(title_surface, (100, 100))  # Draw the title
+        screen.blit(start_surface, (50, 300))  # Draw the "Start Game" option
+        screen.blit(quit_surface, (50, 375))  # Draw the "Quit" option
 
         pygame.display.update()  # Update the display
 
@@ -132,6 +132,7 @@ while True:
             if not paused:  # If the game isn't paused
                 if game.game_over:  # Reset the game if it's over
                     game.game_over = False
+                    pygame.time.wait(500)
                     game.reset()
                 if event.key == pygame.K_UP or event.key == pygame.K_SPACE:  # Rotate the block with UP or SPACE
                     game.rotate()
