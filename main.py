@@ -1,11 +1,19 @@
 import pygame, sys  # Importing pygame for game rendering and sys for system exit
 from game import Game  # Import the Game class which contains the Tetris game logic
 from settings import *  # Import a custom colors class that stores various color values
-
+import settings
 pygame.init()  # Initialize the pygame module
 
-title_font = get_font(30)  # Font for titles (e.g., "Score", "Next")
-menu_font = get_font(30)  # Font for the pause menu
+# Fonts and text surfaces for rendering on the screen
+title_font = pygame.font.Font(FONT_PATH, 30)  # Font for titles (e.g., "Score", "Next")
+menu_font = pygame.font.Font(FONT_PATH, 30)  # Font for the pause menu
+
+controls = {
+    'left': pygame.K_a,
+    'right': pygame.K_d,
+    'down': pygame.K_s,
+    'rotate': pygame.K_w
+}
 
 # Render static text surfaces for "Score", "Next", and "GAME OVER"
 score_surface = title_font.render("SCORE", True, colors.BLACK)
@@ -17,14 +25,25 @@ score_rect = pygame.Rect(320, 55, 170, 60)  # Score box on the right of the scre
 next_rect = pygame.Rect(320, 215, 170, 180)  # Next block preview box
 
 # Set up the game window with dimensions (500x620)
-screen = pygame.display.set_mode((DISPLAY_W, DISPLAY_H))
+screen = pygame.display.set_mode((500, 620))
 pygame.display.set_caption("Python Tetris")  # Window title
 
+clock = pygame.time.Clock()  # A clock object to manage the game's frame rate
+
 game = Game()  # Initialize the game (an instance of the Game class)
+
+paused = False  # Flag to track if the game is paused
+speed = 300  # Initial speed of the game (block movement down)
 
 # Custom user event for updating the game every few milliseconds
 GAME_UPDATE = pygame.USEREVENT
 pygame.time.set_timer(GAME_UPDATE, speed)  # Set the event to trigger every `speed` milliseconds
+
+# Initialize timers for controlling movement (left, right, down)
+move_left_timer = 0
+move_right_timer = 0
+move_down_timer = 0
+move_delay = 100  # Delay (in milliseconds) to prevent continuous movement when holding keys
 
 # Debounce variables for mouse clicks in the pause menu
 last_click_time = 0
@@ -35,17 +54,17 @@ def pause_menu():
     screen.fill(colors.BLUE)  # Fill the screen with dark blue background
     
     # Render pause menu options (Resume, Quit, Speed adjustment)
-    resume_surface = menu_font.render("Resume", True, colors.BLACK)
-    back_to_menu_surface = menu_font.render("Back to menu", True, colors.BLACK)
-    quit_surface = menu_font.render("Quit", True, colors.BLACK)
+    resume_surface = menu_font.render("RESUME", True, colors.BLACK)
+    back_to_menu_surface = menu_font.render("BACK TO MENU", True, colors.BLACK)
+    quit_surface = menu_font.render("QUIT", True, colors.BLACK)
     #drop down speed
-    speed_surface = menu_font.render(f"Speed: {speed}", True, colors.BLACK)
-    decrease_speed_surface = menu_font.render("slower", True, colors.BLACK)
-    increase_speed_surface = menu_font.render("faster", True, colors.BLACK)
+    speed_surface = menu_font.render(f"SPEED: {speed}", True, colors.BLACK)
+    decrease_speed_surface = menu_font.render("SLOWER", True, colors.BLACK)
+    increase_speed_surface = menu_font.render("FASTER", True, colors.BLACK)
     #block moving speed
-    move_surface = menu_font.render(f"Movement: {move_delay}", True, colors.BLACK)
-    decrease_move_surface = menu_font.render("slower", True, colors.BLACK)
-    increase_move_surface = menu_font.render("faster", True, colors.BLACK)
+    move_surface = menu_font.render(f"MOVEMENT: {move_delay}", True, colors.BLACK)
+    decrease_move_surface = menu_font.render("SLOWER", True, colors.BLACK)
+    increase_move_surface = menu_font.render("FASTER", True, colors.BLACK)
     
     # Position the menu options
     resume_rect = resume_surface.get_rect(center=(250, 200))
@@ -53,12 +72,12 @@ def pause_menu():
     quit_rect = quit_surface.get_rect(center=(250, 250))
     #drop down speed
     speed_rect = speed_surface.get_rect(center=(250, 300))
-    decrease_speed_rect = decrease_speed_surface.get_rect(center=(200, 350))
-    increase_speed_rect = increase_speed_surface.get_rect(center=(300, 350))
+    decrease_speed_rect = decrease_speed_surface.get_rect(center=(150, 350))
+    increase_speed_rect = increase_speed_surface.get_rect(center=(350, 350))
     #block moving speed
     move_rect = speed_surface.get_rect(center=(225, 400))
-    decrease_move_rect = decrease_speed_surface.get_rect(center=(200, 450))
-    increase_move_rect = increase_speed_surface.get_rect(center=(300, 450))
+    decrease_move_rect = decrease_speed_surface.get_rect(center=(150, 450))
+    increase_move_rect = increase_speed_surface.get_rect(center=(350, 450))
     
     # Display the menu options on the screen
     screen.blit(resume_surface, resume_rect)
@@ -79,16 +98,18 @@ def pause_menu():
 def main_menu():
     while True:
         screen.fill(colors.BLUE)  # Fill the background color
-        title_font = pygame.font.Font(None, 74)  # Set up a font for the menu title
-        menu_font = pygame.font.Font(None, 50)  # Set up a font for the menu options
+        title_font = pygame.font.Font(FONT_PATH, 74)  # Set up a font for the menu title
+        menu_font = pygame.font.Font(FONT_PATH, 50)  # Set up a font for the menu options
         
-        title_surface = title_font.render("Tetris", True, colors.BLACK)
-        start_surface = menu_font.render("1. Start Game", True, colors.BLACK)
-        quit_surface = menu_font.render("2. Quit", True, colors.BLACK)
+        title_surface = title_font.render("TETRIS", True, colors.BLACK)
+        start_surface = menu_font.render("1. START GAME", True, colors.BLACK)
+        settings_surface = menu_font.render("2. SETTINGS",True,colors.BLACK)
+        quit_surface = menu_font.render("3. QUIT", True, colors.BLACK)
         
-        screen.blit(title_surface, (200, 200))  # Draw the title
-        screen.blit(start_surface, (200, 300))  # Draw the "Start Game" option
-        screen.blit(quit_surface, (200, 350))  # Draw the "Quit" option
+        screen.blit(title_surface, (100, 200))  # Draw the title
+        screen.blit(start_surface, (50, 300))  # Draw the "Start Game" option
+        screen.blit(settings_surface, (50, 350))
+        screen.blit(quit_surface, (50, 400))  # Draw the "Quit" option
 
         pygame.display.update()  # Update the display
 
@@ -100,6 +121,9 @@ def main_menu():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:  # Start game on pressing '1'
                     return  # Exit the menu loop and start the game
+                if event.key == pygame.K_2:
+                    settings.handle_settings(screen,controls)
+                    return
                 if event.key == pygame.K_2:  # Quit game on pressing '2'
                     pygame.quit()
                     sys.exit()
@@ -121,7 +145,7 @@ while True:
                 if game.game_over:  # Reset the game if it's over
                     game.game_over = False
                     game.reset()
-                if event.key == pygame.K_UP or event.key == pygame.K_SPACE:  # Rotate the block with UP or SPACE
+                if event.key == controls['rotate']:  # Rotate the block with UP or SPACE
                     game.rotate()
         if event.type == GAME_UPDATE and not game.game_over and not paused:
             game.move_down()  # Automatically move the block down on the GAME_UPDATE event
@@ -131,15 +155,15 @@ while True:
         keys = pygame.key.get_pressed()  # Get the state of all keyboard keys
         if not game.game_over:  # Only allow movement if the game is not over
             # Move block left (left arrow key or 'A') with debounce
-            if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and current_time - move_left_timer > move_delay:
+            if (keys[controls['left']]) and current_time - move_left_timer > move_delay:
                 game.move_left()
                 move_left_timer = current_time
             # Move block right (right arrow key or 'D') with debounce
-            if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and current_time - move_right_timer > move_delay:
+            if (keys[controls['right']]) and current_time - move_right_timer > move_delay:
                 game.move_right()
                 move_right_timer = current_time
             # Move block down (down arrow key or 'S') with debounce
-            if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and current_time - move_down_timer > move_delay:
+            if (keys[controls['down']]) and current_time - move_down_timer > move_delay:
                 game.move_down()
                 game.update_score(0, 1)  # Update score when moving down
                 move_down_timer = current_time

@@ -1,4 +1,4 @@
-from settings import *
+import pygame
 from colors import Colors
 
 class Grid:

@@ -7,7 +7,7 @@ class menu:
     def pause_menu():
         # Fonts and text surfaces for rendering on the screen
         menu_font = pygame.font.Font(None, 30)  # Font for the pause menu
-        screen = pygame.display.set_mode((DISPLAY_W, DISPLAY_H))
+        screen = pygame.display.set_mode((500, 620))
         # Function to display the pause menu
         screen.fill(Colors.dark_blue)  # Fill the screen with dark blue background
         
