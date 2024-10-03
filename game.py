@@ -50,6 +50,8 @@ class Game:
                     if event.key == pygame.K_p:
                         self.paused = not self.paused
                     if not self.paused and not self.game_over:
+                        if event.key == controls['hard_drop']:
+                            self.hard_drop()
                         if event.key == controls['rotate']:
                             self.rotate()
                 if event.type == GAME_UPDATE and not self.paused and not self.game_over:
@@ -66,7 +68,6 @@ class Game:
                 if (keys[controls['down']]) and current_time - move_down_timer > move_delay:
                     self.move_down()
                     self.update_score(0, 1)
-                    move_down_timer = current_time
 
             # Draw game state
             screen.fill(Colors.dark_blue)
@@ -152,6 +153,13 @@ class Game:
         if self.block_inside() == False or self.block_fits() == False:
             self.current_block.move(-1, 0)  # Undo the move if invalid
             self.lock_block()  # Lock the block in place if it can't move down further
+            
+    def hard_drop(self):
+        # Moves the block instantly to the lowest possible position
+        while self.block_inside and self.block_fits():
+            self.current_block.move(1, 0)
+        self.current_block.move(-1, 0)
+        self.lock_block()
 
     def lock_block(self):
         # Locks the current block in the grid and prepares the next block

@@ -54,7 +54,8 @@ default_controls = {
     'left': pygame.K_a,
     'right': pygame.K_d,
     'down': pygame.K_s,
-    'rotate': pygame.K_w
+    'rotate': pygame.K_w,
+    'hard_drop': pygame.K_SPACE,
 }
 
 # Controls that can be changed

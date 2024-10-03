@@ -47,17 +47,17 @@ class Menus:
         screen.fill(colors.BLUE)  # Fill the screen with dark blue background
         
         # Render pause menu options (Resume, Quit, Speed adjustment)
-        resume_surface = pygame.font.Font(FONT_PATH, 50).render("RESUME", True, "black")
-        back_to_menu_surface = pygame.font.Font(FONT_PATH, 50).render("BACK TO MENU", True, colors.BLACK)
-        quit_surface = pygame.font.Font(FONT_PATH, 50).render("QUIT", True, colors.BLACK)
+        resume_surface = pygame.font.Font(FONT_PATH, 30).render("RESUME", True, "black")
+        back_to_menu_surface = pygame.font.Font(FONT_PATH, 30).render("BACK TO MENU", True, colors.BLACK)
+        quit_surface = pygame.font.Font(FONT_PATH, 30).render("QUIT", True, colors.BLACK)
         #drop down speed
-        speed_surface = pygame.font.Font(FONT_PATH, 50).render(f"SPEED: {speed}", True, colors.BLACK)
-        decrease_speed_surface = pygame.font.Font(FONT_PATH, 50).render("SLOWER", True, colors.BLACK)
-        increase_speed_surface = pygame.font.Font(FONT_PATH, 50).render("FASTER", True, colors.BLACK)
+        speed_surface = pygame.font.Font(FONT_PATH, 30).render(f"SPEED: {speed}", True, colors.BLACK)
+        decrease_speed_surface = pygame.font.Font(FONT_PATH, 20).render("SLOWER", True, colors.BLACK)
+        increase_speed_surface = pygame.font.Font(FONT_PATH, 20).render("FASTER", True, colors.BLACK)
         #block moving speed
-        move_surface = pygame.font.Font(FONT_PATH, 50).render(f"MOVEMENT: {move_delay}", True, colors.BLACK)
-        decrease_move_surface = pygame.font.Font(FONT_PATH, 50).render("SLOWER", True, colors.BLACK)
-        increase_move_surface = pygame.font.Font(FONT_PATH, 50).render("FASTER", True, colors.BLACK)
+        move_surface = pygame.font.Font(FONT_PATH, 30).render(f"MOVEMENT: {move_delay}", True, colors.BLACK)
+        decrease_move_surface = pygame.font.Font(FONT_PATH, 20).render("SLOWER", True, colors.BLACK)
+        increase_move_surface = pygame.font.Font(FONT_PATH, 20).render("FASTER", True, colors.BLACK)
         
         # Position the menu options
         resume_rect = resume_surface.get_rect(center=(250, 200))
@@ -95,28 +95,30 @@ class Menus:
         def draw_buttons():
             # Define buttons for each control setting (Left, Right, Down, Rotate)
             left_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.1), text_input=f'LEFT: {pygame.key.name(controls["left"]).upper()}', 
-                                font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+                                font=pygame.font.Font(FONT_PATH, 40), base_color="black", hovering_color="red")
             right_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.2), text_input=f'RIGHT: {pygame.key.name(controls["right"]).upper()}', 
-                                font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+                                font=pygame.font.Font(FONT_PATH, 40), base_color="black", hovering_color="red")
             down_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.3), text_input=f'DOWN: {pygame.key.name(controls["down"]).upper()}', 
-                                font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+                                font=pygame.font.Font(FONT_PATH, 40), base_color="black", hovering_color="red")
             rotate_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.4), text_input=f'ROTATE: {pygame.key.name(controls["rotate"]).upper()}', 
-                                font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+                                font=pygame.font.Font(FONT_PATH, 40), base_color="black", hovering_color="red")
+            hard_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.5), text_input=f'HARD DROP: {pygame.key.name(controls["hard_drop"]).upper()}', 
+                                font=pygame.font.Font(FONT_PATH, 40), base_color="black", hovering_color="red")
             default_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.8), text_input=f'RETURN TO DEFAULT', 
                                 font=pygame.font.Font(FONT_PATH, 35), base_color="black", hovering_color="red")
             back_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.9), text_input='BACK TO MENU', 
                                 font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")          
-            return left_button, right_button, down_button, rotate_button, default_button, back_button
+            return left_button, right_button, down_button, rotate_button, hard_button, default_button, back_button
         
         # Draw the initial buttons
-        left_button, right_button, down_button, rotate_button, default_button, back_button = draw_buttons()
+        left_button, right_button, down_button, rotate_button, hard_button, default_button, back_button = draw_buttons()
         
         while True:
             screen.fill(Colors.cyan)  # Background color for settings menu
             mouse_pos = pygame.mouse.get_pos()
 
             # Display buttons and update color if hovered
-            for button in [left_button, right_button, down_button, rotate_button, back_button, default_button]:
+            for button in [left_button, right_button, down_button, rotate_button, hard_button, back_button, default_button]:
                 button.changeColor(mouse_pos)
                 button.update(screen)
 
@@ -141,6 +143,9 @@ class Menus:
                     if rotate_button.checkForInput(mouse_pos):
                         self.remap_control(screen, 'rotate', controls)
                         button_remapped = True
+                    if hard_button.checkForInput(mouse_pos):
+                        self.remap_control(screen, 'hard_drop', controls)
+                        button_remapped = True          
                     if default_button.checkForInput(mouse_pos):
                         controls = default_controls.copy()
                         button_remapped = True
@@ -149,7 +154,7 @@ class Menus:
                         return  # Exit the settings menu and go back to the main menu
 
             if button_remapped:
-                left_button, right_button, down_button, rotate_button, default_button, back_button = draw_buttons()
+                left_button, right_button, down_button, rotate_button, hard_button, default_button, back_button = draw_buttons()
                 
             pygame.display.update()  # Ensure the display updates each frame
     

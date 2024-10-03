@@ -24,6 +24,9 @@ class Grid:
         return 0 <= row < self.num_rows and 0 <= column < self.num_cols
 
     def is_empty(self, row, column):
+        # First, check if the cell is inside the grid boundaries
+        if not self.is_inside(row, column):
+            return False  # If it's outside the grid, treat it as not empty (invalid move)
         # Returns True if the cell at the given row and column is empty (value 0).
         return self.grid[row][column] == 0
 
