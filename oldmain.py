@@ -22,6 +22,8 @@ game = Game()
 GAME_UPDATE = pygame.USEREVENT
 pygame.time.set_timer(GAME_UPDATE, 200)
 
+paused = False  # Add a pause flag
+
 while True:
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:

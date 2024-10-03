@@ -3,6 +3,8 @@ from blocks import *  # Importing different tetromino (block) shapes
 from settings import *
 from colors import Colors
 import random, sys
+from menu import Menus
+
 
 class Game:
     def __init__(self):
@@ -28,7 +30,9 @@ class Game:
         # Main game loop (runs continuously)
         clock = pygame.time.Clock()
         self.paused = False # Flag to track if the game is paused
-        
+        speed = 300
+        last_click_time = 0
+        click_delay = 300
         # Custom user event for updating the game every few milliseconds
         GAME_UPDATE = pygame.USEREVENT
         pygame.time.set_timer(GAME_UPDATE, speed) # Set the event to trigger every `speed` milliseconds
@@ -68,6 +72,43 @@ class Game:
             screen.fill(Colors.dark_blue)
             self.draw(screen)
             
+            if self.paused:
+                # pygame.display.update()  # Update the display to show the pause menu
+                        # Event handling for the pause menu
+                 # Handle mouse input for the pause menu
+                resume_rect, quit_rect, increase_speed_rect, decrease_speed_rect, increase_move_rect, decrease_move_rect, back_to_menu_rect = Menus().pause_menu(screen,speed,move_delay)
+                mouse_pos = pygame.mouse.get_pos()  # Get the current mouse position
+                mouse_click = pygame.mouse.get_pressed()  # Get the state of mouse buttons
+                
+                # Handle mouse clicks with a debounce delay
+                if mouse_click[0] and current_time - last_click_time > click_delay:  # Left-click
+                    last_click_time = current_time
+                    if resume_rect.collidepoint(mouse_pos):  # Resume button clicked
+                        self.paused = not self.paused
+                    elif quit_rect.collidepoint(mouse_pos):  # Quit button clicked
+                        pygame.quit()
+                        sys.exit()
+                    elif back_to_menu_rect.collidepoint(mouse_pos):  # Quit button clicked
+                        Menus().main_menu(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT)
+                        self.paused = not self.paused
+                        self.reset()
+                    elif increase_speed_rect.collidepoint(mouse_pos):  # Increase speed clicked
+                        if speed > 50:  # Limit the speed increase
+                            speed -= 50
+                            pygame.time.set_timer(GAME_UPDATE, speed)  # Update the game speed
+                    elif decrease_speed_rect.collidepoint(mouse_pos):  # Decrease speed clicked
+                        if speed < 1000:  # Limit the speed decrease
+                            speed += 50
+                            pygame.time.set_timer(GAME_UPDATE, speed)  # Update the game speed
+                    elif increase_move_rect.collidepoint(mouse_pos):  # Increase move clicked
+                        if move_delay > 0:  # Limit the move increase
+                            move_delay -= 50
+                            pygame.time.set_timer(GAME_UPDATE, speed)  # Update the move speed
+                    elif decrease_move_rect.collidepoint(mouse_pos):  # Decrease speed clicked
+                        if move_delay < 1000:  # Limit the move decrease
+                            move_delay += 50
+                            pygame.time.set_timer(GAME_UPDATE, speed)  # Update the move speed
+
             # Blit game_screen onto the main screen
             main_screen = pygame.display.get_surface()
             main_screen.blit(screen, (0, 0))
