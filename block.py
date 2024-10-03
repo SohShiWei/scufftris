@@ -43,16 +43,47 @@ class Block:
         if self.rotation_state == -1:
             # Set to the last defined state if rotation state goes below 0.
             self.rotation_state = len(self.cells) - 1
+            
+    def clone(self):
+        # Clone a block to be used for shadows
+        cloned_block = Block(self.id)
+        cloned_block.cells = self.cells
+        cloned_block.row_offset = self.row_offset
+        cloned_block.column_offset = self.column_offset
+        cloned_block.rotation_state = self.rotation_state
+        return cloned_block
 
-    def draw(self, screen, offset_x, offset_y):
+    def draw(self, screen, offset_x, offset_y, shadow=False):
         # Draw the block on the specified screen at a given offset.
         tiles = self.get_cell_positions()  # Get the current positions of the block's cells
-        for tile in tiles:
-            # Create a rectangle for each tile position to be drawn on the screen.
-            tile_rect = pygame.Rect(
-                offset_x + tile.column * self.cell_size,  # Calculate x position
-                offset_y + tile.row * self.cell_size,  # Calculate y position
-                self.cell_size - 1,  # Width of the cell rectangle
-                self.cell_size - 1   # Height of the cell rectangle
-            )
-            pygame.draw.rect(screen, self.colors[self.id], tile_rect)  # Draw the rectangle on the screen
+        
+        if shadow:
+            # Create a transparent surface for the shadow block
+            shadow_surface = pygame.Surface((self.cell_size * len(tiles), self.cell_size * len(tiles)), pygame.SRCALPHA)
+            shadow_color = (self.colors[self.id][0], self.colors[self.id][1], self.colors[self.id][2], 25)  # Semi-transparent shadow
+
+            for tile in tiles:
+                # Create the rectangle for each tile
+                tile_rect = pygame.Rect(
+                    (tile.column - self.column_offset) * self.cell_size,  # Calculate x position relative to block
+                    (tile.row - self.row_offset) * self.cell_size,  # Calculate y position relative to block
+                    self.cell_size - 1,
+                    self.cell_size - 1
+                )
+                # Draw the shadow rectangle on the shadow surface
+                pygame.draw.rect(shadow_surface, shadow_color, tile_rect)
+
+            # Blit the shadow surface onto the main screen with the given offset
+            screen.blit(shadow_surface, (offset_x + self.column_offset * self.cell_size, offset_y + self.row_offset * self.cell_size))
+
+        else:
+            
+            for tile in tiles:
+                # Create a rectangle for each tile position to be drawn on the screen.
+                tile_rect = pygame.Rect(
+                    offset_x + tile.column * self.cell_size,  # Calculate x position
+                    offset_y + tile.row * self.cell_size,  # Calculate y position
+                    self.cell_size - 1,  # Width of the cell rectangle
+                    self.cell_size - 1   # Height of the cell rectangle
+                )
+                pygame.draw.rect(screen, self.colors[self.id], tile_rect)  # Draw the rectangle on the screen
