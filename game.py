@@ -39,8 +39,8 @@ class Game:
         pygame.time.set_timer(GAME_UPDATE, speed) # Set the event to trigger every `speed` milliseconds
         # Initialize timers for controlling movement (left, right, down)
         move_left_timer, move_right_timer, move_down_timer = 0, 0, 0
-        move_delay = 100 # Delay (in milliseconds) to prevent continuous movement when holding keys
-        down_move_delay = 1500
+        move_delay = 200 # Delay (in milliseconds) to prevent continuous movement when holding keys
+        # down_move_delay = 1500
         
         while True:
             current_time = pygame.time.get_ticks()
@@ -57,6 +57,9 @@ class Game:
                             self.hard_drop()
                         if event.key == controls['rotate']:
                             self.rotate()
+                    if self.game_over == True:  # Reset the game if it's over
+                            self.game_over = False
+                            self.reset()
                             
                 if event.type == GAME_UPDATE and not self.paused and not self.game_over:
                     self.move_down()
@@ -64,13 +67,17 @@ class Game:
             if not self.paused and not self.game_over:
                 keys = pygame.key.get_pressed()
                 if (keys[controls['left']]) and current_time - move_left_timer > move_delay:
+                    # print(current_time , move_left_timer , move_delay)
                     self.move_left()
                     move_left_timer = current_time
                 if (keys[controls['right']]) and current_time - move_right_timer > move_delay:
+                    # print(current_time , move_right_timer , move_delay)
                     self.move_right()
                     move_right_timer = current_time
-                if (keys[controls['down']]) and current_time - move_down_timer > down_move_delay:
+                if (keys[controls['down']]) and current_time - move_down_timer > move_delay:
+                    # print(current_time , move_down_timer , move_delay)
                     self.move_down()
+                    move_down_timer = current_time
                     self.update_score(0, 1)
 
             # Draw game state
@@ -93,7 +100,8 @@ class Game:
                     elif quit_rect.collidepoint(mouse_pos):  # Quit button clicked
                         pygame.quit()
                         sys.exit()
-                    elif back_to_menu_rect.collidepoint(mouse_pos):  # Quit button clicked
+                    elif back_to_menu_rect.collidepoint(mouse_pos):  # return button clicked
+                        print(self.paused,self.game_over)
                         Menus().main_menu(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT)
                         self.paused = not self.paused
                         self.reset()
