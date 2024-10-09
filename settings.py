@@ -44,12 +44,10 @@ move_left_timer = 0
 move_right_timer = 0
 move_down_timer = 0
 move_delay = 100  # Delay (in milliseconds) to prevent continuous movement when holding keys
-game_over = False
 
 # Debounce variables for mouse clicks in the pause menu
 last_click_time = 0
 click_delay = 300  # Delay between mouse clicks (in milliseconds)
-
 
 # Default controls setting (DO NOT CHANGE)
 default_controls = {

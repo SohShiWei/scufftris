@@ -1,9 +1,4 @@
 # Python Tetris Game using pygame or pygame-ce
-Goals for this week:
-- Fix UI for Score, upcoming (URGENT)
-- Clean up code, move certain code/setting into another page
-- if there is time simple game modes can be added (40L/Blitz) nothing too complicated
-- Write report and record project video
 
 🕹️🐍🎮 This GitHub repository is home to the full source code for a Tetris game built with the Python programming language and pygame library. 💻🎨🎧 The game uses various pygame functions for graphics, input handling, and audio and can be played on Windows, macOS, and Linux computers. 🔍📖 The code is well-structured and easy to read, making it a valuable resource for aspiring game developers looking to learn about pygame game programming.
 
