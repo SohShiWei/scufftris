@@ -20,8 +20,7 @@ class Game:
         # Load sounds for rotating blocks and clearing rows
         self.rotate_sound = pygame.mixer.Sound("Sounds/rotate.wav")
         self.clear_sound = pygame.mixer.Sound("Sounds/clear.ogg")
-        self.hard_drop_sound = pygame.mixer.Sound("Sounds/harddrop.mp3")
-    
+
         # Load and play background music on loop
         pygame.mixer.music.load("Sounds/music.ogg")
         pygame.mixer.music.play(-1)  # -1 means the music loops indefinitely
@@ -40,7 +39,6 @@ class Game:
         # Initialize timers for controlling movement (left, right, down)
         move_left_timer, move_right_timer, move_down_timer = 0, 0, 0
         move_delay = 100 # Delay (in milliseconds) to prevent continuous movement when holding keys
-        down_move_delay = 1500
         
         while True:
             current_time = pygame.time.get_ticks()
@@ -48,7 +46,6 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                    
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_p:
                         self.paused = not self.paused
@@ -57,7 +54,6 @@ class Game:
                             self.hard_drop()
                         if event.key == controls['rotate']:
                             self.rotate()
-                            
                 if event.type == GAME_UPDATE and not self.paused and not self.game_over:
                     self.move_down()
 
@@ -69,7 +65,7 @@ class Game:
                 if (keys[controls['right']]) and current_time - move_right_timer > move_delay:
                     self.move_right()
                     move_right_timer = current_time
-                if (keys[controls['down']]) and current_time - move_down_timer > down_move_delay:
+                if (keys[controls['down']]) and current_time - move_down_timer > move_delay:
                     self.move_down()
                     self.update_score(0, 1)
 
@@ -142,28 +138,27 @@ class Game:
     def move_left(self):
         # Moves the current block left and checks if it remains inside and fits
         self.current_block.move(0, -1)
-        if self.block_inside(self.current_block) == False or self.block_fits(self.current_block) == False:
+        if self.block_inside() == False or self.block_fits() == False:
             self.current_block.move(0, 1)  # Undo the move if invalid
 
     def move_right(self):
         # Moves the current block right and checks if it remains inside and fits
         self.current_block.move(0, 1)
-        if self.block_inside(self.current_block) == False or self.block_fits(self.current_block) == False:
+        if self.block_inside() == False or self.block_fits() == False:
             self.current_block.move(0, -1)  # Undo the move if invalid
 
     def move_down(self):
         # Moves the current block down and locks it if it can't move further
         self.current_block.move(1, 0)
-        if self.block_inside(self.current_block) == False or self.block_fits(self.current_block) == False:
+        if self.block_inside() == False or self.block_fits() == False:
             self.current_block.move(-1, 0)  # Undo the move if invalid
             self.lock_block()  # Lock the block in place if it can't move down further
             
     def hard_drop(self):
         # Moves the block instantly to the lowest possible position
-        while self.block_inside and self.block_fits(self.current_block):
+        while self.block_inside and self.block_fits():
             self.current_block.move(1, 0)
         self.current_block.move(-1, 0)
-        self.hard_drop_sound.play()
         self.lock_block()
 
     def lock_block(self):
@@ -178,7 +173,7 @@ class Game:
         if rows_cleared > 0:
             self.clear_sound.play()  # Play sound if rows were cleared
             self.update_score(rows_cleared, 0)  # Update score based on cleared rows
-        if self.block_fits(self.current_block) == False:
+        if self.block_fits() == False:
             self.game_over = True  # End the game if a new block can't fit
 
     def reset(self):
@@ -189,9 +184,9 @@ class Game:
         self.next_block = self.get_random_block()  # Prepare the next block
         self.score = 0  # Reset score
 
-    def block_fits(self, block):
+    def block_fits(self):
         # Checks if the current block fits in its current position
-        tiles = block.get_cell_positions()
+        tiles = self.current_block.get_cell_positions()
         for tile in tiles:
             if self.grid.is_empty(tile.row, tile.column) == False:  # Check if tile is in an empty cell
                 return False
@@ -200,32 +195,22 @@ class Game:
     def rotate(self):
         # Rotates the current block and checks if it fits
         self.current_block.rotate()
-        if self.block_inside(self.current_block) == False or self.block_fits(self.current_block) == False:
+        if self.block_inside() == False or self.block_fits() == False:
             self.current_block.undo_rotation()  # Undo the rotation if it doesn't fit
         else:
             self.rotate_sound.play()  # Play the rotate sound if the rotation was successful
 
-    def block_inside(self, block):
+    def block_inside(self):
         # Checks if the current block is completely within the grid boundaries
-        tiles = block.get_cell_positions()
+        tiles = self.current_block.get_cell_positions()
         for tile in tiles:
             if self.grid.is_inside(tile.row, tile.column) == False:  # Check if the tile is inside the grid
                 return False
         return True
-    
-    def get_shadow_block(self):
-        # Create a shadow block to preview where the block will land
-        shadow_block = self.current_block.clone()
-        while self.block_inside(shadow_block) and self.block_fits(shadow_block):
-            shadow_block.move(1, 0) # Shadow block is placed at the bottom
-        shadow_block.move(-1, 0) # Place shadow block 1 row up if it does not fit
-        return shadow_block
 
     def draw(self, screen):
         # Draws the grid and the current and next blocks on the screen
         self.grid.draw(screen)  # Draw the grid
-        
-        self.get_shadow_block().draw(screen, 11, 11, shadow=True)  # Draw a shadow block on the grid
         self.current_block.draw(screen, 11, 11)  # Draw the current block on the grid
 
         # Draw the next block in a preview box (with slight adjustment for size)
