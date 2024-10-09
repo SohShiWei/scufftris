@@ -1,5 +1,4 @@
 import sys
-# from game import Game
 from colors import Colors
 from settings import *
 from button import Button
@@ -41,6 +40,45 @@ class Menus:
                         sys.exit()
             
             pygame.display.update()
+
+    def gameover(self, screen, screen_width, screen_height,score):
+        pygame.display.set_caption("Game Over")
+        print(score)
+        
+        while True:
+            screen.fill(Colors.cyan)
+
+            menu_mouse_pos = pygame.mouse.get_pos()
+            
+            menu_text = pygame.font.Font(FONT_PATH, 80).render("GAME OVER", True, "black")
+            menu_text = pygame.font.Font(FONT_PATH, 80).render(str(score), True, "black")
+            menu_rect = menu_text.get_rect(center=(screen_width * 0.5, screen_height * 0.35))
+            
+            # Menu buttons
+            TryAgain_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.5), text_input="TRY AGAIN?", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            Back_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.6), text_input="BACK TO MENU", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            Quit_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.7), text_input="QUIT", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            
+            screen.blit(menu_text, menu_rect)
+            
+            for button in [TryAgain_button, Back_button, Quit_button]:
+                button.changeColor(menu_mouse_pos)
+                button.update(screen)
+            
+            for event in pygame.event.get():
+                if event.type ==  pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if TryAgain_button.checkForInput(menu_mouse_pos):
+                        return "try again"
+                    if Back_button.checkForInput(menu_mouse_pos):
+                        self.main_menu(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT)
+                    if Quit_button.checkForInput(menu_mouse_pos):
+                        pygame.quit()
+                        sys.exit()
+            
+            pygame.display.update()
         
     def pause_menu(self, screen,speed,move_delay):
         # Function to display the pause menu
@@ -48,6 +86,7 @@ class Menus:
         
         # Render pause menu options (Resume, Quit, Speed adjustment)
         resume_surface = pygame.font.Font(FONT_PATH, 30).render("RESUME", True, "black")
+        restart_surface = pygame.font.Font(FONT_PATH, 30).render("RESTART", True, "black")
         back_to_menu_surface = pygame.font.Font(FONT_PATH, 30).render("BACK TO MENU", True, colors.BLACK)
         quit_surface = pygame.font.Font(FONT_PATH, 30).render("QUIT", True, colors.BLACK)
         #drop down speed
@@ -60,8 +99,9 @@ class Menus:
         increase_move_surface = pygame.font.Font(FONT_PATH, 20).render("FASTER", True, colors.BLACK)
         
         # Position the menu options
-        resume_rect = resume_surface.get_rect(center=(250, 200))
-        back_to_menu_rect = back_to_menu_surface.get_rect(center=(250, 500))
+        resume_rect = resume_surface.get_rect(center=(250, 100))
+        restart_rect = restart_surface.get_rect(center=(250, 150))
+        back_to_menu_rect = back_to_menu_surface.get_rect(center=(250, 200))
         quit_rect = quit_surface.get_rect(center=(250, 250))
         #drop down speed
         speed_rect = speed_surface.get_rect(center=(250, 300))
@@ -74,6 +114,7 @@ class Menus:
         
         # Display the menu options on the screen
         screen.blit(resume_surface, resume_rect)
+        screen.blit(restart_surface, restart_rect)
         screen.blit(back_to_menu_surface, back_to_menu_rect)
         screen.blit(quit_surface, quit_rect)
         screen.blit(speed_surface, speed_rect)
@@ -86,7 +127,7 @@ class Menus:
         pygame.display.update()  # Update the display to show the pause menu
         
         # Return the rects for menu items to detect clicks
-        return resume_rect, quit_rect, increase_speed_rect, decrease_speed_rect, increase_move_rect, decrease_move_rect, back_to_menu_rect
+        return resume_rect, restart_rect, quit_rect, increase_speed_rect, decrease_speed_rect, increase_move_rect, decrease_move_rect, back_to_menu_rect
     
     def show_settings_menu(self, screen, controls, screen_width, screen_height):
         # Display caption for settings
