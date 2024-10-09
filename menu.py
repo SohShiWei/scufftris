@@ -1,5 +1,5 @@
 import sys
-# from game import Game
+import pygame  # Make sure you have pygame imported
 from colors import Colors
 from settings import *
 from button import Button
@@ -17,23 +17,26 @@ class Menus:
             menu_rect = menu_text.get_rect(center=(screen_width * 0.5, screen_height * 0.35))
             
             # Menu buttons
-            play_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.5), text_input="PLAY", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
-            settings_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.6), text_input="SETTINGS", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
-            quit_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.7), text_input="QUIT", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            play_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.5), text_input="PLAY", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            sprint_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.60), text_input="SPRINT MODE", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            settings_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.70), text_input="SETTINGS", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            quit_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.80), text_input="QUIT", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
             
             screen.blit(menu_text, menu_rect)
             
-            for button in [play_button, settings_button, quit_button]:
+            for button in [play_button, sprint_button, settings_button, quit_button]:
                 button.changeColor(menu_mouse_pos)
                 button.update(screen)
             
             for event in pygame.event.get():
-                if event.type ==  pygame.QUIT:
+                if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if play_button.checkForInput(menu_mouse_pos):
                         return "play"
+                    if sprint_button.checkForInput(menu_mouse_pos): 
+                        return "sprint"
                     if settings_button.checkForInput(menu_mouse_pos):
                         return "settings"
                     if quit_button.checkForInput(menu_mouse_pos):
@@ -42,7 +45,7 @@ class Menus:
             
             pygame.display.update()
         
-    def pause_menu(self, screen,speed,move_delay):
+    def pause_menu(self, screen, speed, move_delay):
         # Function to display the pause menu
         screen.fill(colors.BLUE)  # Fill the screen with dark blue background
         
@@ -79,7 +82,7 @@ class Menus:
         screen.blit(speed_surface, speed_rect)
         screen.blit(decrease_speed_surface, decrease_speed_rect)
         screen.blit(increase_speed_surface, increase_speed_rect)
-        screen.blit(move_surface, move_rect )
+        screen.blit(move_surface, move_rect)
         screen.blit(decrease_move_surface, decrease_move_rect)
         screen.blit(increase_move_surface, increase_move_rect)
         
@@ -145,19 +148,18 @@ class Menus:
                         button_remapped = True
                     if hard_button.checkForInput(mouse_pos):
                         self.remap_control(screen, 'hard_drop', controls)
-                        button_remapped = True          
-                    if default_button.checkForInput(mouse_pos):
-                        controls = default_controls.copy()
                         button_remapped = True
-                        print("Returned settings to default!")
+                    if default_button.checkForInput(mouse_pos):
+                        controls = self.reset_controls()
+                        button_remapped = True
                     if back_button.checkForInput(mouse_pos):
-                        return  # Exit the settings menu and go back to the main menu
+                        return controls  # Return updated controls
 
-            if button_remapped:
+            if button_remapped:  # If a button was remapped, redraw buttons
                 left_button, right_button, down_button, rotate_button, hard_button, default_button, back_button = draw_buttons()
-                
-            pygame.display.update()  # Ensure the display updates each frame
-    
+
+            pygame.display.update()  # Update display for the settings menu
+
     def remap_control(self, screen, key_name, controls):
         prompt_font = pygame.font.Font(None, 40)
         prompt_text = f'PRESS NEW KEY FOR {key_name.upper()}'
@@ -175,4 +177,13 @@ class Menus:
                     return  # Return back to the settings menu
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    exit()
+
+    def reset_controls(self):
+        # Function to reset controls to defaults
+        return {
+            "left": pygame.K_LEFT,
+            "right": pygame.K_RIGHT,
+            "down": pygame.K_DOWN,
+            "rotate": pygame.K_UP,
+            "hard_drop": pygame.K_SPACE
+        }
