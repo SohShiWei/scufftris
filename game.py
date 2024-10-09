@@ -110,9 +110,9 @@ class Game:
             self.draw(screen)  # Draw the current state of the game (grid and blocks)
             
             if self.game_over:  # If the game is over, display the "GAME OVER" text
-                Menus().gameover(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT,self.score)
+                game_over = Menus().gameover(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT,self.score)
+                self.game_over = game_over
                 self.reset()
-                self.game_over = not self.game_over
 
             if self.paused:
                 # pygame.display.update()  # Update the display to show the pause menu

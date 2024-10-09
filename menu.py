@@ -44,6 +44,7 @@ class Menus:
     def gameover(self, screen, screen_width, screen_height,score):
         pygame.display.set_caption("Game Over")
         print(score)
+        game_over = False
         
         while True:
             screen.fill(Colors.cyan)
@@ -71,9 +72,10 @@ class Menus:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if TryAgain_button.checkForInput(menu_mouse_pos):
-                        return "try again"
+                        return game_over
                     if Back_button.checkForInput(menu_mouse_pos):
                         self.main_menu(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT)
+                        return game_over
                     if Quit_button.checkForInput(menu_mouse_pos):
                         pygame.quit()
                         sys.exit()
