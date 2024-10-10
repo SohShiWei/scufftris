@@ -207,6 +207,7 @@ class Game:
         self.current_block.move(-1, 0)
         self.hard_drop_sound.play()
         self.lock_block()
+        self.update_score(0, 20)
 
     def lock_block(self):
         # Locks the current block in the grid and prepares the next block
