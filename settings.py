@@ -84,12 +84,13 @@ DISPLAY_HEIGHT = 620
 
 
 #game settings
-speed = 300  # Initial speed of the game (block movement down)
+speed = 600  # Initial speed of the game (block movement down)
+move_delay = 100  # Delay (in milliseconds) to prevent continuous movement when holding keys
+game_over = False
+# Initialize timers for controlling movement (left, right, down)
 move_left_timer = 0
 move_right_timer = 0
 move_down_timer = 0
-move_delay = 100  # Delay (in milliseconds) to prevent continuous movement when holding keys
-game_over = False
 
 # Debounce variables for mouse clicks in the pause menu
 last_click_time = 0

@@ -1,4 +1,5 @@
 import sys
+import pygame_menu
 from settings import *
 
 class Menus:
@@ -89,45 +90,23 @@ class Menus:
         restart_surface = pygame.font.Font(FONT_PATH, 30).render("RESTART", True, "black")
         back_to_menu_surface = pygame.font.Font(FONT_PATH, 30).render("BACK TO MENU", True, Colors.BLACK)
         quit_surface = pygame.font.Font(FONT_PATH, 30).render("QUIT", True, Colors.BLACK)
-        #drop down speed
-        speed_surface = pygame.font.Font(FONT_PATH, 30).render(f"SPEED: {speed}", True, Colors.BLACK)
-        decrease_speed_surface = pygame.font.Font(FONT_PATH, 20).render("SLOWER", True, Colors.BLACK)
-        increase_speed_surface = pygame.font.Font(FONT_PATH, 20).render("FASTER", True, Colors.BLACK)
-        #block moving speed
-        move_surface = pygame.font.Font(FONT_PATH, 30).render(f"MOVEMENT: {move_delay}", True, Colors.BLACK)
-        decrease_move_surface = pygame.font.Font(FONT_PATH, 20).render("SLOWER", True, Colors.BLACK)
-        increase_move_surface = pygame.font.Font(FONT_PATH, 20).render("FASTER", True, Colors.BLACK)
         
         # Position the menu options
         resume_rect = resume_surface.get_rect(center=(250, 100))
         restart_rect = restart_surface.get_rect(center=(250, 150))
         back_to_menu_rect = back_to_menu_surface.get_rect(center=(250, 200))
         quit_rect = quit_surface.get_rect(center=(250, 250))
-        #drop down speed
-        speed_rect = speed_surface.get_rect(center=(250, 300))
-        decrease_speed_rect = decrease_speed_surface.get_rect(center=(150, 350))
-        increase_speed_rect = increase_speed_surface.get_rect(center=(350, 350))
-        #block moving speed
-        move_rect = speed_surface.get_rect(center=(225, 400))
-        decrease_move_rect = decrease_speed_surface.get_rect(center=(150, 450))
-        increase_move_rect = increase_speed_surface.get_rect(center=(350, 450))
         
         # Display the menu options on the screen
         screen.blit(resume_surface, resume_rect)
         screen.blit(restart_surface, restart_rect)
         screen.blit(back_to_menu_surface, back_to_menu_rect)
         screen.blit(quit_surface, quit_rect)
-        screen.blit(speed_surface, speed_rect)
-        screen.blit(decrease_speed_surface, decrease_speed_rect)
-        screen.blit(increase_speed_surface, increase_speed_rect)
-        screen.blit(move_surface, move_rect )
-        screen.blit(decrease_move_surface, decrease_move_rect)
-        screen.blit(increase_move_surface, increase_move_rect)
         
         pygame.display.update()  # Update the display to show the pause menu
         
         # Return the rects for menu items to detect clicks
-        return resume_rect, restart_rect, quit_rect, increase_speed_rect, decrease_speed_rect, increase_move_rect, decrease_move_rect, back_to_menu_rect
+        return resume_rect, restart_rect, quit_rect, back_to_menu_rect
     
     def show_settings_menu(self, screen, controls, screen_width, screen_height):
         pygame.display.set_caption("Settings Menu")
@@ -159,7 +138,7 @@ class Menus:
                     if controls_button.checkForInput(mouse_pos):
                         self.controls_menu(screen, controls, screen_width, screen_height)
                     if handling_button.checkForInput(mouse_pos):
-                        self.handling_menu(screen)
+                        self.handling_menu(screen, screen_width, screen_height)
                         return game_over
                     if back_button.checkForInput(mouse_pos):
                         return
@@ -255,5 +234,46 @@ class Menus:
                     pygame.quit()
                     exit()
     
-    def handling_menu():
-        pass    
+    def handling_menu(self, screen, screen_width, screen_height):
+        pygame.display.set_caption("Game Configuration")
+        
+        global speed, move_delay
+        
+        speed_surface = pygame.font.Font(FONT_PATH, 30).render(f"SPEED: {speed}", True, Colors.BLACK)
+        move_surface = pygame.font.Font(FONT_PATH, 30).render(f"MOVEMENT: {move_delay}", True, Colors.BLACK)
+        decrease_speed_button = Button(image=None, pos=(150, 250), text_input="SLOWER", font=pygame.font.Font(FONT_PATH, 20), base_color="black", hovering_color="red")
+        increase_speed_button = Button(image=None, pos=(350, 250), text_input="FASTER", font=pygame.font.Font(FONT_PATH, 20), base_color="black", hovering_color="red")
+        decrease_move_button = Button(image=None, pos=(150, 350), text_input="SLOWER", font=pygame.font.Font(FONT_PATH, 20), base_color="black", hovering_color="red")
+        increase_move_button = Button(image=None, pos=(350, 350), text_input="FASTER", font=pygame.font.Font(FONT_PATH, 20), base_color="black", hovering_color="red")
+        
+        while True:
+            screen.fill(Colors.CYAN)
+            mouse_pos = pygame.mouse.get_pos()
+
+            for button in [decrease_speed_button, increase_speed_button, decrease_move_button, increase_move_button]:
+                button.changeColor(mouse_pos)
+                button.update(screen)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if decrease_speed_button.checkForInput(mouse_pos):
+                        speed = min(speed + 50, 1000)
+                    elif increase_speed_button.checkForInput(mouse_pos):
+                        speed = max(speed - 50, 50)
+                    elif decrease_move_button.checkForInput(mouse_pos):
+                        move_delay = min(move_delay + 10, 500)
+                    elif increase_move_button.checkForInput(mouse_pos):
+                        move_delay = max(move_delay - 10, 50)
+
+            # Update the text surfaces for speed and movement delay
+            speed_surface = pygame.font.Font(FONT_PATH, 30).render(f"SPEED: {speed}", True, Colors.BLACK)
+            move_surface = pygame.font.Font(FONT_PATH, 30).render(f"MOVEMENT: {move_delay}", True, Colors.BLACK)
+            screen.blit(speed_surface, (150, 200))
+            screen.blit(move_surface, (150, 300))
+            pygame.display.update() 
+        
+        
+        
