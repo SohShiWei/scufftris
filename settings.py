@@ -2,23 +2,68 @@ import pygame, os
 # 2D Vector class used for positioning (0,0) as the middle of the grid
 vec = pygame.math.Vector2
 
-
-class colors:
-# Colours
+class Colors:
+    # Original Colors
+    DARK_GREY = (26, 31, 40)
+    GREEN = (0, 255, 107)
+    RED = (251, 50, 40)
+    ORANGE = (255, 152, 0)
+    YELLOW = (255, 245, 2)
+    PURPLE = (159, 46, 255)
+    CYAN = (0, 255, 233)
+    BLUE = (0, 83, 255)
+    WHITE = (255, 255, 255)
+    DARK_BLUE = (44, 44, 127)
+    LIGHT_BLUE = (59, 85, 162)
+    # Additional Colors
     CREAM = (254, 250, 224)
     LIGHT_CREAM = (254, 252, 235)
-    GREEN = (2, 156, 84)
-    ORANGE = (245, 91, 27)
-    BLUE = (163, 230, 238)
-    PURPLE = (217, 199, 249)
-    YELLOW = (249, 251, 83)
     PINK = (255, 164, 208)
     GREY = (225, 225, 225)
     BLACK = (0, 0, 0)
-    WHITE = (255, 255, 255)
+
     @classmethod
     def get_cell_colors(cls):
-        return [cls.CREAM, cls.LIGHT_CREAM, cls.GREEN, cls.ORANGE, cls.BLUE, cls.PURPLE, cls.YELLOW, cls.PINK,cls.GREY,cls.BLACK,cls.WHITE]
+        # Accessed by block.py and grid.py to return board and tetromino colors
+        return [cls.DARK_GREY, cls.BLUE, cls.ORANGE, cls.CYAN, cls.YELLOW, cls.GREEN, cls.PURPLE, cls.RED]
+
+class Position:
+    def __init__(self, row, column):
+        # Initialize a Position object with row and column attributes.
+        # This class is used to represent the position of a block in the grid.
+        
+        self.row = row  # The row index of the position (vertical axis)
+        self.column = column  # The column index of the position (horizontal axis)
+        
+class Button():
+	def __init__(self, image, pos, text_input, font, base_color, hovering_color):
+		self.image = image
+		self.x_pos = pos[0]
+		self.y_pos = pos[1]
+		self.font = font
+		self.base_color, self.hovering_color = base_color, hovering_color
+		self.text_input = text_input
+		self.text = self.font.render(self.text_input, True, self.base_color)
+		if self.image is None:
+			self.image = self.text
+		self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
+		self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
+
+	def update(self, screen):
+		if self.image is not None:
+			screen.blit(self.image, self.rect)
+		screen.blit(self.text, self.text_rect)
+
+	def checkForInput(self, position):
+		if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
+			return True
+		return False
+
+	def changeColor(self, position):
+		if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
+			self.text = self.font.render(self.text_input, True, self.hovering_color)
+		else:
+			self.text = self.font.render(self.text_input, True, self.base_color)
 
 # Fonts
 # find current directory
@@ -31,9 +76,9 @@ FONT_PATH = os.path.join(current_dir,'Fonts', 'GAMEPLAY-1987.ttf')
 # Display
 FPS = 90
 ANIMATION_TIME_INTERVAL = 400
-DISPLAY_COLOUR = (colors.BLACK)
-DISPLAY_BACKGROUND_COLOUR = (colors.LIGHT_CREAM)
-TILE_BORDER_COLOUR = (colors.CREAM)
+DISPLAY_COLOUR = (Colors.BLACK)
+DISPLAY_BACKGROUND_COLOUR = (Colors.LIGHT_CREAM)
+TILE_BORDER_COLOUR = (Colors.CREAM)
 DISPLAY_WIDTH = 500
 DISPLAY_HEIGHT = 620
 

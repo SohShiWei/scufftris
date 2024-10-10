@@ -1,7 +1,6 @@
 from grid import Grid 
 from blocks import *  # Importing different tetromino (block) shapes
 from settings import *
-from colors import Colors
 import random, sys
 from menu import Menus
 
@@ -46,8 +45,8 @@ class Game:
         
 
         # Render static text surfaces for "Score", "Next", and "GAME OVER"
-        score_surface = title_font.render("SCORE", True, colors.BLACK)
-        next_surface = title_font.render("NEXT", True, colors.BLACK)
+        score_surface = title_font.render("SCORE", True, Colors.BLACK)
+        next_surface = title_font.render("NEXT", True, Colors.BLACK)
         # game_over_surface = title_font.render("GAME OVER", True, colors.BLACK)
 
         # Rectangles for positioning the score and next block sections
@@ -92,21 +91,21 @@ class Game:
                     # print(current_time , move_down_timer , move_delay)
                     self.move_down()
                     move_down_timer = current_time
-                    self.update_score(0, 1)
+                    self.update_score(0, 2)
                     # print(self.score)
 
-            score_value_surface = title_font.render(str(self.score), True, Colors.white)  # Render current score
+            score_value_surface = title_font.render(str(self.score), True, Colors.WHITE)  # Render current score
             # Draw game state
-            screen.fill(Colors.dark_blue)
+            screen.fill(Colors.DARK_BLUE)
             self.draw(screen)
-            game_over_surface = title_font.render("GAME OVER", True, Colors.white)
+            game_over_surface = title_font.render("GAME OVER", True, Colors.WHITE)
             screen.blit(score_surface, (365, 20, 50, 50))  # Draw the "Score" title
             screen.blit(next_surface, (375, 180, 50, 50))  # Draw the "Next" title for the next block preview
              # Draw rectangles for score and next block areas
-            pygame.draw.rect(screen, Colors.light_blue, score_rect, 0, 10)
+            pygame.draw.rect(screen, Colors.LIGHT_BLUE, score_rect, 0, 10)
             # Display the score inside the score rectangle
             screen.blit(score_value_surface, score_value_surface.get_rect(centerx=score_rect.centerx, centery=score_rect.centery))
-            pygame.draw.rect(screen, Colors.light_blue, next_rect, 0, 10)  # Draw the rectangle for the next block preview
+            pygame.draw.rect(screen, Colors.LIGHT_BLUE, next_rect, 0, 10)  # Draw the rectangle for the next block preview
             self.draw(screen)  # Draw the current state of the game (grid and blocks)
             
             if self.game_over:  # If the game is over, display the "GAME OVER" text
@@ -165,13 +164,13 @@ class Game:
     def update_score(self, lines_cleared, move_down_points):
         # Updates the score based on the number of lines cleared and points for moving blocks down
         if lines_cleared == 1:
-            self.score += 100
+            self.score += 40
         elif lines_cleared == 2:
-            self.score += 200
+            self.score += 100
         elif lines_cleared == 3:
             self.score += 300
         elif lines_cleared == 4:
-            self.score += 400
+            self.score += 1200
         self.score += move_down_points  # Add points for moving blocks down
 
     def get_random_block(self):

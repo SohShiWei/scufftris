@@ -1,14 +1,12 @@
 import sys
-from colors import Colors
 from settings import *
-from button import Button
 
 class Menus:
     def main_menu(self, screen, screen_width, screen_height):
         pygame.display.set_caption("Python Tetris Menu")
         
         while True:
-            screen.fill(Colors.cyan)
+            screen.fill(Colors.CYAN)
 
             menu_mouse_pos = pygame.mouse.get_pos()
             
@@ -47,7 +45,7 @@ class Menus:
         game_over = False
         
         while True:
-            screen.fill(Colors.cyan)
+            screen.fill(Colors.CYAN)
 
             menu_mouse_pos = pygame.mouse.get_pos()
             
@@ -84,21 +82,21 @@ class Menus:
         
     def pause_menu(self, screen,speed,move_delay):
         # Function to display the pause menu
-        screen.fill(colors.BLUE)  # Fill the screen with dark blue background
+        screen.fill(Colors.CYAN)  # Fill the screen with Cyan background
         
         # Render pause menu options (Resume, Quit, Speed adjustment)
         resume_surface = pygame.font.Font(FONT_PATH, 30).render("RESUME", True, "black")
         restart_surface = pygame.font.Font(FONT_PATH, 30).render("RESTART", True, "black")
-        back_to_menu_surface = pygame.font.Font(FONT_PATH, 30).render("BACK TO MENU", True, colors.BLACK)
-        quit_surface = pygame.font.Font(FONT_PATH, 30).render("QUIT", True, colors.BLACK)
+        back_to_menu_surface = pygame.font.Font(FONT_PATH, 30).render("BACK TO MENU", True, Colors.BLACK)
+        quit_surface = pygame.font.Font(FONT_PATH, 30).render("QUIT", True, Colors.BLACK)
         #drop down speed
-        speed_surface = pygame.font.Font(FONT_PATH, 30).render(f"SPEED: {speed}", True, colors.BLACK)
-        decrease_speed_surface = pygame.font.Font(FONT_PATH, 20).render("SLOWER", True, colors.BLACK)
-        increase_speed_surface = pygame.font.Font(FONT_PATH, 20).render("FASTER", True, colors.BLACK)
+        speed_surface = pygame.font.Font(FONT_PATH, 30).render(f"SPEED: {speed}", True, Colors.BLACK)
+        decrease_speed_surface = pygame.font.Font(FONT_PATH, 20).render("SLOWER", True, Colors.BLACK)
+        increase_speed_surface = pygame.font.Font(FONT_PATH, 20).render("FASTER", True, Colors.BLACK)
         #block moving speed
-        move_surface = pygame.font.Font(FONT_PATH, 30).render(f"MOVEMENT: {move_delay}", True, colors.BLACK)
-        decrease_move_surface = pygame.font.Font(FONT_PATH, 20).render("SLOWER", True, colors.BLACK)
-        increase_move_surface = pygame.font.Font(FONT_PATH, 20).render("FASTER", True, colors.BLACK)
+        move_surface = pygame.font.Font(FONT_PATH, 30).render(f"MOVEMENT: {move_delay}", True, Colors.BLACK)
+        decrease_move_surface = pygame.font.Font(FONT_PATH, 20).render("SLOWER", True, Colors.BLACK)
+        increase_move_surface = pygame.font.Font(FONT_PATH, 20).render("FASTER", True, Colors.BLACK)
         
         # Position the menu options
         resume_rect = resume_surface.get_rect(center=(250, 100))
@@ -157,7 +155,7 @@ class Menus:
         left_button, right_button, down_button, rotate_button, hard_button, default_button, back_button = draw_buttons()
         
         while True:
-            screen.fill(Colors.cyan)  # Background color for settings menu
+            screen.fill(Colors.CYAN)  # Background color for settings menu
             mouse_pos = pygame.mouse.get_pos()
 
             # Display buttons and update color if hovered
@@ -204,9 +202,9 @@ class Menus:
     def remap_control(self, screen, key_name, controls):
         prompt_font = pygame.font.Font(None, 40)
         prompt_text = f'PRESS NEW KEY FOR {key_name.upper()}'
-        prompt_surface = prompt_font.render(prompt_text, True, colors.BLACK)
+        prompt_surface = prompt_font.render(prompt_text, True, Colors.BLACK)
 
-        screen.fill((Colors.red))  # Fill screen with dark background
+        screen.fill((Colors.RED))  # Fill screen with dark background
         screen.blit(prompt_surface, (100, 100))  # Display prompt text
         pygame.display.flip()  # Update the display
 

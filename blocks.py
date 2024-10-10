@@ -1,6 +1,6 @@
 #all the tetris blocks
 from block import Block
-from position import Position
+from settings import Position
 
 class LBlock(Block):
 	def __init__(self):
