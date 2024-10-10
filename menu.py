@@ -1,7 +1,7 @@
 import sys
-import pygame
+import pygame_menu
 from settings import *
-
+        
 class Menus:
     def main_menu(self, screen, screen_width, screen_height):
         pygame.display.set_caption("Python Tetris Menu")
@@ -44,7 +44,7 @@ class Menus:
             pygame.display.update()
 
     def gameover(self, screen, screen_width, screen_height,score):
-        pygame.display.set_caption("Game Over")
+        pygame.display.set_caption("Game Over!")
         print(score)
         game_over = False
         
@@ -84,32 +84,71 @@ class Menus:
             
             pygame.display.update()
         
-    def pause_menu(self, screen,speed,move_delay):
-        # Function to display the pause menu
-        screen.fill(Colors.CYAN)  # Fill the screen with Cyan background
+    def pause_menu(self, screen,speed,move_delay, screen_width, screen_height):
         
-        # Render pause menu options (Resume, Quit, Speed adjustment)
-        resume_surface = pygame.font.Font(FONT_PATH, 30).render("RESUME", True, "black")
-        restart_surface = pygame.font.Font(FONT_PATH, 30).render("RESTART", True, "black")
-        back_to_menu_surface = pygame.font.Font(FONT_PATH, 30).render("BACK TO MENU", True, Colors.BLACK)
-        quit_surface = pygame.font.Font(FONT_PATH, 30).render("QUIT", True, Colors.BLACK)
+        pygame.display.set_caption("Game Paused!")
         
-        # Position the menu options
-        resume_rect = resume_surface.get_rect(center=(250, 100))
-        restart_rect = restart_surface.get_rect(center=(250, 150))
-        back_to_menu_rect = back_to_menu_surface.get_rect(center=(250, 200))
-        quit_rect = quit_surface.get_rect(center=(250, 250))
+        def draw_buttons():
+            # Define buttons for each control setting (Left, Right, Down, Rotate)
+            
+            # Menu buttons
+            resume_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.5), text_input="CONTROLS", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            restart_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.6), text_input="HANDLING", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            settings_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.7), text_input="BACK", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            main_menu_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.7), text_input="BACK", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            quit_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.7), text_input="BACK", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            
+            return resume_button, restart_button, settings_button, main_menu_button, quit_button
         
-        # Display the menu options on the screen
-        screen.blit(resume_surface, resume_rect)
-        screen.blit(restart_surface, restart_rect)
-        screen.blit(back_to_menu_surface, back_to_menu_rect)
-        screen.blit(quit_surface, quit_rect)
+        # Draw the initial buttons
+        resume_button, restart_button, settings_button, main_menu_button, quit_button = draw_buttons()
+        while True:
+            screen.fill(Colors.CYAN)  # Background color for settings menu
+            mouse_pos = pygame.mouse.get_pos()
+            
+            for button in [resume_button, restart_button, settings_button, main_menu_button, quit_button]:
+                    button.changeColor(mouse_pos)
+                    button.update(screen)  
+                    
+            for event in pygame.event.get():
+                if event.type ==  pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if resume_button.checkForInput(mouse_pos):
+                        self.controls_menu(screen, controls, screen_width, screen_height)
+                    if restart_button.checkForInput(mouse_pos):
+                        self.handling_menu(screen, screen_width, screen_height)
+                        return game_over
+                    if quit_button.checkForInput(mouse_pos):
+                        return
+            
+            pygame.display.update()
+        # # Function to display the pause menu
+        # screen.fill(Colors.CYAN)  # Fill the screen with Cyan background
         
-        pygame.display.update()  # Update the display to show the pause menu
+        # # Render pause menu options (Resume, Quit, Speed adjustment)
+        # resume_surface = pygame.font.Font(FONT_PATH, 30).render("RESUME", True, "black")
+        # restart_surface = pygame.font.Font(FONT_PATH, 30).render("RESTART", True, "black")
+        # back_to_menu_surface = pygame.font.Font(FONT_PATH, 30).render("BACK TO MENU", True, Colors.BLACK)
+        # quit_surface = pygame.font.Font(FONT_PATH, 30).render("QUIT", True, Colors.BLACK)
         
-        # Return the rects for menu items to detect clicks
-        return resume_rect, restart_rect, quit_rect, back_to_menu_rect
+        # # Position the menu options
+        # resume_rect = resume_surface.get_rect(center=(250, 100))
+        # restart_rect = restart_surface.get_rect(center=(250, 150))
+        # back_to_menu_rect = back_to_menu_surface.get_rect(center=(250, 200))
+        # quit_rect = quit_surface.get_rect(center=(250, 250))
+        
+        # # Display the menu options on the screen
+        # screen.blit(resume_surface, resume_rect)
+        # screen.blit(restart_surface, restart_rect)
+        # screen.blit(back_to_menu_surface, back_to_menu_rect)
+        # screen.blit(quit_surface, quit_rect)
+        
+        # pygame.display.update()  # Update the display to show the pause menu
+        
+        # # Return the rects for menu items to detect clicks
+        # return resume_rect, restart_rect, quit_rect, back_to_menu_rect
     
     def show_settings_menu(self, screen, controls, screen_width, screen_height):
         pygame.display.set_caption("Settings Menu")
@@ -244,16 +283,17 @@ class Menus:
         
         speed_surface = pygame.font.Font(FONT_PATH, 30).render(f"SPEED: {speed}", True, Colors.BLACK)
         move_surface = pygame.font.Font(FONT_PATH, 30).render(f"MOVEMENT: {move_delay}", True, Colors.BLACK)
-        decrease_speed_button = Button(image=None, pos=(150, 250), text_input="SLOWER", font=pygame.font.Font(FONT_PATH, 20), base_color="black", hovering_color="red")
-        increase_speed_button = Button(image=None, pos=(350, 250), text_input="FASTER", font=pygame.font.Font(FONT_PATH, 20), base_color="black", hovering_color="red")
-        decrease_move_button = Button(image=None, pos=(150, 350), text_input="SLOWER", font=pygame.font.Font(FONT_PATH, 20), base_color="black", hovering_color="red")
-        increase_move_button = Button(image=None, pos=(350, 350), text_input="FASTER", font=pygame.font.Font(FONT_PATH, 20), base_color="black", hovering_color="red")
+        decrease_speed_button = Button(image=None, pos=(screen_width * 0.25, screen_height * 0.15), text_input="SLOWER", font=pygame.font.Font(FONT_PATH, 20), base_color="black", hovering_color="red")
+        increase_speed_button = Button(image=None, pos=(screen_width * 0.75, screen_height * 0.15), text_input="FASTER", font=pygame.font.Font(FONT_PATH, 20), base_color="black", hovering_color="red")
+        decrease_move_button = Button(image=None, pos=(screen_width * 0.25, screen_height * 0.35), text_input="SLOWER", font=pygame.font.Font(FONT_PATH, 20), base_color="black", hovering_color="red")
+        increase_move_button = Button(image=None, pos=(screen_width * 0.75, screen_height * 0.35), text_input="FASTER", font=pygame.font.Font(FONT_PATH, 20), base_color="black", hovering_color="red")
+        back_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.9), text_input='BACK', font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
         
         while True:
             screen.fill(Colors.CYAN)
             mouse_pos = pygame.mouse.get_pos()
 
-            for button in [decrease_speed_button, increase_speed_button, decrease_move_button, increase_move_button]:
+            for button in [decrease_speed_button, increase_speed_button, decrease_move_button, increase_move_button, back_button]:
                 button.changeColor(mouse_pos)
                 button.update(screen)
 
@@ -270,12 +310,14 @@ class Menus:
                         move_delay = min(move_delay + 10, 500)
                     elif increase_move_button.checkForInput(mouse_pos):
                         move_delay = max(move_delay - 10, 50)
-
+                    elif back_button.checkForInput(mouse_pos):
+                        return  # Exit the settings menu and go back to the main menu
+                        
             # Update the text surfaces for speed and movement delay
             speed_surface = pygame.font.Font(FONT_PATH, 30).render(f"SPEED: {speed}", True, Colors.BLACK)
             move_surface = pygame.font.Font(FONT_PATH, 30).render(f"MOVEMENT: {move_delay}", True, Colors.BLACK)
-            screen.blit(speed_surface, (150, 200))
-            screen.blit(move_surface, (150, 300))
+            screen.blit(speed_surface, (screen_width * 0.25, screen_height * 0.05))
+            screen.blit(move_surface, (screen_width * 0.25, screen_height * 0.25))
             pygame.display.update() 
         
         

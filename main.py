@@ -2,7 +2,6 @@ import pygame, sys  # Importing pygame for game rendering and sys for system exi
 from game import Game  # Import the Game class which contains the Tetris game logic
 from settings import *  # Import a custom colors class that stores various color values
 from menu import Menus
-from sprint_game import SprintGame
 
 pygame.init()  # Initialize the pygame module
 
@@ -22,10 +21,6 @@ while True:
         current_page = menus.main_menu(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT)
     elif current_page == "play":
         game.play(screen)  # Start the game
-    elif current_page == "sprint":  
-        sprint_game = SprintGame(target_lines=5)  # Target number of lines 
-        sprint_game.play(screen)
-        current_page = "menu"
     elif current_page == "settings":
         menus.show_settings_menu(screen, controls, DISPLAY_WIDTH, DISPLAY_HEIGHT) 
         current_page = "menu"
