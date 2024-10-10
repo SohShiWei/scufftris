@@ -130,8 +130,45 @@ class Menus:
         return resume_rect, restart_rect, quit_rect, increase_speed_rect, decrease_speed_rect, increase_move_rect, decrease_move_rect, back_to_menu_rect
     
     def show_settings_menu(self, screen, controls, screen_width, screen_height):
-        # Display caption for settings
         pygame.display.set_caption("Settings Menu")
+        
+        def draw_buttons():
+            # Define buttons for each control setting (Left, Right, Down, Rotate)
+            
+            # Menu buttons
+            controls_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.5), text_input="CONTROLS", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            handling_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.6), text_input="HANDLING", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            back_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.7), text_input="BACK", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            return controls_button, handling_button, back_button
+        
+        # Draw the initial buttons
+        controls_button, handling_button, back_button = draw_buttons()
+        while True:
+            screen.fill(Colors.CYAN)  # Background color for settings menu
+            mouse_pos = pygame.mouse.get_pos()
+            
+            for button in [controls_button, handling_button, back_button]:
+                    button.changeColor(mouse_pos)
+                    button.update(screen)  
+                    
+            for event in pygame.event.get():
+                if event.type ==  pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if controls_button.checkForInput(mouse_pos):
+                        self.controls_menu(screen, controls, screen_width, screen_height)
+                    if handling_button.checkForInput(mouse_pos):
+                        self.handling_menu(screen)
+                        return game_over
+                    if back_button.checkForInput(mouse_pos):
+                        return
+            
+            pygame.display.update()
+            
+    def controls_menu(self, screen, controls, screen_width, screen_height):
+        # Display caption for settings
+        pygame.display.set_caption("Controls Menu")
         
         def draw_buttons():
             # Define buttons for each control setting (Left, Right, Down, Rotate)
@@ -147,7 +184,7 @@ class Menus:
                                 font=pygame.font.Font(FONT_PATH, 40), base_color="black", hovering_color="red")
             default_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.8), text_input=f'RETURN TO DEFAULT', 
                                 font=pygame.font.Font(FONT_PATH, 35), base_color="black", hovering_color="red")
-            back_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.9), text_input='BACK TO MENU', 
+            back_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.9), text_input='BACK', 
                                 font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")          
             return left_button, right_button, down_button, rotate_button, hard_button, default_button, back_button
         
@@ -217,3 +254,6 @@ class Menus:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
+    
+    def handling_menu():
+        pass    
