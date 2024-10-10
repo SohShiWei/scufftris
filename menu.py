@@ -1,5 +1,5 @@
 import sys
-import pygame_menu
+import pygame
 from settings import *
 
 class Menus:
@@ -15,13 +15,14 @@ class Menus:
             menu_rect = menu_text.get_rect(center=(screen_width * 0.5, screen_height * 0.35))
             
             # Menu buttons
-            play_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.5), text_input="PLAY", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
-            settings_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.6), text_input="SETTINGS", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
-            quit_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.7), text_input="QUIT", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            play_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.5), text_input="PLAY", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            sprint_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.60), text_input="SPRINT MODE", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            settings_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.70), text_input="SETTINGS", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            quit_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.80), text_input="QUIT", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
             
             screen.blit(menu_text, menu_rect)
             
-            for button in [play_button, settings_button, quit_button]:
+            for button in [play_button, settings_button, quit_button, sprint_button]:
                 button.changeColor(menu_mouse_pos)
                 button.update(screen)
             
@@ -34,6 +35,8 @@ class Menus:
                         return "play"
                     if settings_button.checkForInput(menu_mouse_pos):
                         return "settings"
+                    if sprint_button.checkForInput(menu_mouse_pos): 
+                        return "sprint"
                     if quit_button.checkForInput(menu_mouse_pos):
                         pygame.quit()
                         sys.exit()
