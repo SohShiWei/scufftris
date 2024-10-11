@@ -107,6 +107,8 @@ class Game:
                 game_over = Menus().gameover(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT,self.score)
                 self.game_over = game_over
                 self.reset()
+                if game_over == False:
+                    return
 
             if self.paused:
                 # Display pause menu and handle interations
@@ -126,6 +128,7 @@ class Game:
                     Menus().main_menu(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT)
                     self.reset()  # Reset game state when returning to the main menu
                     self.paused = False  # Ensure the game is unpaused when coming back
+                    return
                     
             # Blit game_screen onto the main screen
             main_screen = pygame.display.get_surface()
