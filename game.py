@@ -29,7 +29,7 @@ class Game:
         
     def play(self, screen):
         # Main game loop (runs continuously)
-        global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer
+        global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer, last_click_time, controls
         
         clock = pygame.time.Clock()
       
@@ -109,30 +109,24 @@ class Game:
                 self.reset()
 
             if self.paused:
-                # pygame.display.update()  # Update the display to show the pause menu
-                # Event handling for the pause menu
-                # Handle mouse input for the pause menu
-                resume_rect, restart_rect, quit_rect, back_to_menu_rect = Menus().pause_menu(screen,speed,move_delay)
-                mouse_pos = pygame.mouse.get_pos()  # Get the current mouse position
-                mouse_click = pygame.mouse.get_pressed()  # Get the state of mouse buttons
+                # Display pause menu and handle interations
+                menu_action = Menus().pause_menu(screen, speed, move_delay, DISPLAY_WIDTH, DISPLAY_HEIGHT)
                 
-                # Handle mouse clicks with a debounce delay
-                if mouse_click[0] and current_time - last_click_time > click_delay:  # Left-click
-                    last_click_time = current_time
-                    if resume_rect.collidepoint(mouse_pos):  # Resume button clicked
-                        self.paused = not self.paused
-                    elif quit_rect.collidepoint(mouse_pos):  # Quit button clicked
-                        pygame.quit()
-                        sys.exit()
-                    if restart_rect.collidepoint(mouse_pos):  # Resume button clicked
-                        self.paused = not self.paused
-                        self.reset()
-                    elif back_to_menu_rect.collidepoint(mouse_pos):  # return button clicked
-                        # print(self.paused,self.game_over)
-                        Menus().main_menu(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT)
-                        self.paused = not self.paused
-                        self.reset()
-
+                # Handle the returned action from the pause menu
+                if menu_action == "resume":
+                    self.paused = False  # Unpause the game
+                elif menu_action == "restart":
+                    self.reset()  # Reset the game state
+                    self.paused = False  # Resume after restarting
+                elif menu_action == "controls":
+                    Menus().controls_menu(screen, controls, DISPLAY_WIDTH, DISPLAY_HEIGHT)
+                    self.reset()  # Reset game state when returning to the main menu
+                    self.paused = False  # Ensure the game is unpaused when coming back   
+                elif menu_action == "main_menu":
+                    Menus().main_menu(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT)
+                    self.reset()  # Reset game state when returning to the main menu
+                    self.paused = False  # Ensure the game is unpaused when coming back
+                    
             # Blit game_screen onto the main screen
             main_screen = pygame.display.get_surface()
             main_screen.blit(screen, (0, 0))
