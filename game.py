@@ -6,6 +6,9 @@ from menu import Menus
 
 
 class Game:
+    
+    global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer, last_click_time, controls
+    
     def __init__(self):
         # Initializes the game with an empty grid, block queue, and starting block
         self.grid = Grid()
@@ -29,8 +32,6 @@ class Game:
         
     def play(self, screen):
         # Main game loop (runs continuously)
-        global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer, last_click_time, controls
-        
         clock = pygame.time.Clock()
       
         # Custom user event for updating the game every few milliseconds

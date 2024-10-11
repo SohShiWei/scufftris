@@ -6,10 +6,14 @@ from menu import *
 from blocks import *
 
 class Sprint(Game):
-    def __init__(self, time_limit):
+
+    global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer, last_click_time, controls, speed_increment_threshold, time_limit
+
+    def __init__(self):
         super().__init__()
-        self.time_limit = time_limit
         self.start_time = pygame.time.get_ticks()  # Store the starting time
+        self.pause_time = 0  # Track the accumulated pause time
+        self.pause_start_time = None  # Track when the pause started
         self.speed = speed  # Initial speed (can be modified)
         self.speed_increment_threshold= speed_increment_threshold
         self.current_speed = self.speed  # Track current speed based on score
@@ -22,8 +26,11 @@ class Sprint(Game):
         self.current_block = self.get_random_block()  # Start with a new block
         self.next_block = self.get_random_block()  # Prepare the next block
         self.score = 0  # Reset score
-        self.starting = pygame.time.get_ticks()
+        self.start_time= pygame.time.get_ticks()
+        self.pause_time = 0  # Track the accumulated pause time
+        self.pause_start_time = 0  # Track when the pause started
         self.game_ended = False  # Reset the end game state
+        self.game_over = False
         self.paused = False  # Unpause the game
         self.time_limit = time_limit
         
@@ -46,9 +53,15 @@ class Sprint(Game):
             self.current_speed = new_speed
             pygame.time.set_timer(pygame.USEREVENT, self.current_speed)
 
-    def end_game(self, screen):  
+    def end_game(self, screen, due_to_time):  
+        
         font = pygame.font.Font(FONT_PATH, 50)
-        game_over_text = font.render("TIME'S UP!", True, Colors.RED)
+        
+        if due_to_time:   
+            game_over_text = font.render("TIME'S UP!", True, Colors.RED)
+        else:
+            game_over_text = font.render("GAME OVER!", True, Colors.RED)
+            
         score_text = font.render(f"FINAL SCORE: {self.score}", True, Colors.ORANGE)
         
         # Get the width and height of the texts
@@ -63,8 +76,6 @@ class Sprint(Game):
         pygame.time.wait(3500)  # Wait before returning to the menu    
         
     def play(self, screen):
-        
-        global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer, last_click_time, controls, speed_increment_threshold
         
         clock = pygame.time.Clock()
         
@@ -82,8 +93,11 @@ class Sprint(Game):
         next_rect = pygame.Rect(320, 215, 170, 180)
         
         while not self.game_over and not self.game_ended:
+            
             current_time = pygame.time.get_ticks()
-            elapsed_time = current_time - self.start_time  # Time since the game started
+            
+            if not self.paused:
+                elapsed_time = (current_time - self.start_time - self.pause_time) # Time since the game started
             
             if elapsed_time >= self.time_limit:
                 self.game_ended = True  # End the game after 2 minutes
@@ -95,7 +109,16 @@ class Sprint(Game):
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_p:
-                        self.paused = not self.paused
+                        
+                        if not self.paused:
+                            self.paused = True
+                            self.pause_start_time = pygame.time.get_ticks()  # Record when the pause starts
+                        else:
+                            # Unpausing the game
+                            self.paused = False
+                            self.pause_time += pygame.time.get_ticks() - self.pause_start_time  # Add duration of the pause to pause_time
+                            self.pause_start_time = 0  # Reset pause start time
+
                     if not self.paused and not self.game_over:
                         if event.key == controls['hard_drop']:
                             self.hard_drop()
@@ -115,7 +138,7 @@ class Sprint(Game):
                     move_right_timer = current_time
                 if (keys[controls['down']]) and current_time - move_down_timer > move_delay:
                     self.move_down()
-                    self.update_score(0, 1)
+                    self.update_score(0, 2)
 
             # Adjust speed based on score
             if self.score // self.speed_increment_threshold > 0:
@@ -128,6 +151,7 @@ class Sprint(Game):
                 # Handle the returned action from the pause menu
                 if menu_action == "resume":
                     pygame.event.clear()
+                    self.pause_time += pygame.time.get_ticks() - self.pause_start_time # Add pause duration
                     self.paused = False  # Unpause the game
                 elif menu_action == "restart":
                     self.reset()  # Reset the game state
@@ -140,10 +164,18 @@ class Sprint(Game):
                     self.paused = False  # Ensure the game is unpaused when coming back   
                 elif menu_action == "main_menu":
                     pygame.event.clear()
-                    Menus().main_menu(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT)
                     self.reset()  # Reset game state when returning to the main menu
+                    Menus().main_menu(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT)
                     self.paused = False  # Ensure the game is unpaused when coming back
                     return
+                
+            # Determine the reason for ending the game and display the appropriate message
+            if self.game_ended:
+                self.end_game(screen, due_to_time=True)
+                return
+            elif self.game_over:
+                self.end_game(screen, due_to_time=False)
+                return
                 
             # Draw game state
             score_value_surface = title_font.render(str(self.score), True, Colors.WHITE)
@@ -165,5 +197,3 @@ class Sprint(Game):
 
             pygame.display.update()
             clock.tick(FPS)
-
-        self.end_game(screen)  # Call a function to handle end-game (e.g., showing score)

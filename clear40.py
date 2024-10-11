@@ -6,6 +6,9 @@ from menu import *
 from blocks import *
 
 class clear40(Game):
+    
+    global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer, last_click_time, controls
+    
     def __init__(self, target_lines):
         super().__init__()  # Call the initializer of the Game class
         self.target_lines = target_lines  # Number of lines to clear
@@ -50,8 +53,6 @@ class clear40(Game):
         
     def play(self, screen):
         # Main game loop (runs continuously)
-        global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer, last_click_time, controls
-        
         clock = pygame.time.Clock()
 
         GAME_UPDATE = pygame.USEREVENT
@@ -96,7 +97,7 @@ class clear40(Game):
                         self.win = False  # Reset the win condition
                         self.starting = pygame.time.get_ticks()  # Restart the timer
                         self.pause_time = 0 #reset pause time
-                    if event.key == pygame.K_q and self.win:  # return t main menu on Q
+                    if event.key == pygame.K_q and self.win:  # return to main menu on Q
                         pygame.event.clear()
                         self.reset()
                         self.win = False  # Reset the win condition
@@ -127,6 +128,7 @@ class clear40(Game):
                 self.game_over = Menus().gameover(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT,self.score)
                 self.reset()
                 self.game_over = False
+                return
 
             elif self.win:  # If the game is over, display the "YOU WIN" text
                 self.display_win(screen)
@@ -149,7 +151,6 @@ class clear40(Game):
                     pygame.event.clear()
                     self.reset()  # Reset game state when returning to the main menu
                     self.paused = False  # Ensure the game is unpaused when coming back   
-                    self.pause_time = 0 # Reset pause time
                 elif menu_action == "main_menu":
                     pygame.event.clear()
                     Menus().main_menu(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT)
