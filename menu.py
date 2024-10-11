@@ -161,7 +161,6 @@ class Menus:
                         self.controls_menu(screen, controls, screen_width, screen_height)
                     if handling_button.checkForInput(mouse_pos):
                         self.handling_menu(screen, screen_width, screen_height)
-                        return game_over
                     if back_button.checkForInput(mouse_pos):
                         return
             
