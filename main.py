@@ -2,6 +2,7 @@ import pygame, sys  # Importing pygame for game rendering and sys for system exi
 from game import Game  # Import the Game class which contains the Tetris game logic
 from settings import *  # Import a custom colors class that stores various color values
 from menu import Menus
+from sprint_game import *
 
 pygame.init()  # Initialize the pygame module
 
