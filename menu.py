@@ -210,19 +210,19 @@ class Menus:
                 # Handle mouse click events
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if left_button.checkForInput(mouse_pos):
-                        self.remap_control(screen, 'left', controls)
+                        self.remap_control(screen, 'left', controls, screen_height, screen_width)
                         button_remapped = True
                     if right_button.checkForInput(mouse_pos):
-                        self.remap_control(screen, 'right', controls)
+                        self.remap_control(screen, 'right', controls, screen_height, screen_width)
                         button_remapped = True
                     if down_button.checkForInput(mouse_pos):
-                        self.remap_control(screen, 'down', controls)
+                        self.remap_control(screen, 'down', controls, screen_height, screen_width)
                         button_remapped = True
                     if rotate_button.checkForInput(mouse_pos):
-                        self.remap_control(screen, 'rotate', controls)
+                        self.remap_control(screen, 'rotate', controls, screen_height, screen_width)
                         button_remapped = True
                     if hard_button.checkForInput(mouse_pos):
-                        self.remap_control(screen, 'hard_drop', controls)
+                        self.remap_control(screen, 'hard_drop', controls, screen_height, screen_width)
                         button_remapped = True          
                     if default_button.checkForInput(mouse_pos):
                         controls = default_controls.copy()
@@ -236,13 +236,14 @@ class Menus:
                 
             pygame.display.update()  # Ensure the display updates each frame
     
-    def remap_control(self, screen, key_name, controls):
+    def remap_control(self, screen, key_name, controls, screen_height, screen_width):
         prompt_font = pygame.font.Font(None, 40)
         prompt_text = f'PRESS NEW KEY FOR {key_name.upper()}'
         prompt_surface = prompt_font.render(prompt_text, True, Colors.BLACK)
 
-        screen.fill((Colors.RED))  # Fill screen with dark background
-        screen.blit(prompt_surface, (100, 100))  # Display prompt text
+        screen.fill((Colors.CYAN))  # Fill screen with dark background
+        prompt_rect = prompt_surface.get_rect(center=(screen_width * 0.5, screen_height * 0.5))
+        screen.blit(prompt_surface, prompt_rect)  # Display prompt text
         pygame.display.flip()  # Update the display
 
         waiting_for_key = True
