@@ -13,17 +13,18 @@ class Menus:
             menu_mouse_pos = pygame.mouse.get_pos()
             
             menu_text = pygame.font.Font(FONT_PATH, 100).render("PYTRIS", True, "black")
-            menu_rect = menu_text.get_rect(center=(screen_width * 0.5, screen_height * 0.35))
+            menu_rect = menu_text.get_rect(center=(screen_width * 0.5, screen_height * 0.10))
             
             # Menu buttons
-            play_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.5), text_input="PLAY", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
-            clear40_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.60), text_input="40 LINES", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
-            settings_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.70), text_input="SETTINGS", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
-            quit_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.80), text_input="QUIT", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            play_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.35), text_input="SURVIVOR", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            clear40_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.45), text_input="40 LINES", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            sprint_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.55), text_input="SPRINT", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            settings_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.80), text_input="SETTINGS", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            quit_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.90), text_input="QUIT", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
             
             screen.blit(menu_text, menu_rect)
             
-            for button in [play_button, settings_button, quit_button, clear40_button]:
+            for button in [play_button, settings_button, quit_button, clear40_button, sprint_button]:
                 button.changeColor(menu_mouse_pos)
                 button.update(screen)
             
@@ -38,6 +39,9 @@ class Menus:
                     if clear40_button.checkForInput(menu_mouse_pos): 
                         pygame.event.clear()
                         return "clear40"
+                    if sprint_button.checkForInput(menu_mouse_pos): 
+                        pygame.event.clear()
+                        return "sprint"
                     if settings_button.checkForInput(menu_mouse_pos):
                         pygame.event.clear()
                         return "settings"

@@ -88,20 +88,6 @@ class Game:
                     move_down_timer = current_time
                     self.update_score(0, 2)
                     # print(self.score)
-
-            score_value_surface = title_font.render(str(self.score), True, Colors.WHITE)  # Render current score
-            # Draw game state
-            screen.fill(Colors.DARK_BLUE)
-            self.draw(screen)
-            game_over_surface = title_font.render("GAME OVER", True, Colors.WHITE)
-            screen.blit(score_surface, (365, 20, 50, 50))  # Draw the "Score" title
-            screen.blit(next_surface, (375, 180, 50, 50))  # Draw the "Next" title for the next block preview
-             # Draw rectangles for score and next block areas
-            pygame.draw.rect(screen, Colors.LIGHT_BLUE, score_rect, 0, 10)
-            # Display the score inside the score rectangle
-            screen.blit(score_value_surface, score_value_surface.get_rect(centerx=score_rect.centerx, centery=score_rect.centery))
-            pygame.draw.rect(screen, Colors.LIGHT_BLUE, next_rect, 0, 10)  # Draw the rectangle for the next block preview
-            self.draw(screen)  # Draw the current state of the game (grid and blocks)
             
             if self.game_over:  # If the game is over, display the "GAME OVER" text
                 self.game_over = Menus().gameover(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT,self.score)
@@ -132,7 +118,21 @@ class Game:
                     self.reset()  # Reset game state when returning to the main menu
                     self.paused = False  # Ensure the game is unpaused when coming back
                     return
-                    
+                
+             # Draw game state
+            score_value_surface = title_font.render(str(self.score), True, Colors.WHITE)  # Render current score
+            screen.fill(Colors.DARK_BLUE)
+            self.draw(screen)
+            game_over_surface = title_font.render("GAME OVER", True, Colors.WHITE)
+            screen.blit(score_surface, (365, 20, 50, 50))  # Draw the "Score" title
+            screen.blit(next_surface, (375, 180, 50, 50))  # Draw the "Next" title for the next block preview
+             # Draw rectangles for score and next block areas
+            pygame.draw.rect(screen, Colors.LIGHT_BLUE, score_rect, 0, 10)
+            # Display the score inside the score rectangle
+            screen.blit(score_value_surface, score_value_surface.get_rect(centerx=score_rect.centerx, centery=score_rect.centery))
+            pygame.draw.rect(screen, Colors.LIGHT_BLUE, next_rect, 0, 10)  # Draw the rectangle for the next block preview
+            self.draw(screen)  # Draw the current state of the game (grid and blocks)
+                   
             # Blit game_screen onto the main screen
             main_screen = pygame.display.get_surface()
             main_screen.blit(screen, (0, 0))

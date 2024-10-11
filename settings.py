@@ -87,6 +87,9 @@ DISPLAY_HEIGHT = 620
 speed = 600  # Initial speed of the game (block movement down)
 move_delay = 100  # Delay (in milliseconds) to prevent continuous movement when holding keys
 game_over = False
+target_lines = 4
+time_limit = 120000
+speed_increment_threshold = 500
 # Initialize timers for controlling movement (left, right, down)
 move_left_timer = 0
 move_right_timer = 0
