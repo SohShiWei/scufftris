@@ -104,11 +104,10 @@ class Game:
             self.draw(screen)  # Draw the current state of the game (grid and blocks)
             
             if self.game_over:  # If the game is over, display the "GAME OVER" text
-                game_over = Menus().gameover(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT,self.score)
-                self.game_over = game_over
+                self.game_over = Menus().gameover(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT,self.score)
                 self.reset()
-                if game_over == False:
-                    return
+                self.game_over = False
+                return
 
             if self.paused:
                 # Display pause menu and handle interations
@@ -116,15 +115,19 @@ class Game:
                 
                 # Handle the returned action from the pause menu
                 if menu_action == "resume":
+                    pygame.event.clear()
                     self.paused = False  # Unpause the game
                 elif menu_action == "restart":
                     self.reset()  # Reset the game state
+                    pygame.event.clear()
                     self.paused = False  # Resume after restarting
                 elif menu_action == "controls":
                     Menus().controls_menu(screen, controls, DISPLAY_WIDTH, DISPLAY_HEIGHT)
+                    pygame.event.clear()
                     self.reset()  # Reset game state when returning to the main menu
                     self.paused = False  # Ensure the game is unpaused when coming back   
                 elif menu_action == "main_menu":
+                    pygame.event.clear()
                     Menus().main_menu(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT)
                     self.reset()  # Reset game state when returning to the main menu
                     self.paused = False  # Ensure the game is unpaused when coming back
@@ -181,9 +184,12 @@ class Game:
         while self.block_inside and self.block_fits(self.current_block):
             self.current_block.move(1, 0)
         self.current_block.move(-1, 0)
-        self.hard_drop_sound.play()
-        self.lock_block()
-        self.update_score(0, 10)
+        if not self.block_inside(self.current_block):
+            self.game_over = True
+        else:
+            self.hard_drop_sound.play()
+            self.update_score(0, 10)
+            self.lock_block()
 
     def lock_block(self):
         # Locks the current block in the grid and prepares the next block

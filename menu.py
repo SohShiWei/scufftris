@@ -4,6 +4,7 @@ from settings import *
         
 class Menus:
     def main_menu(self, screen, screen_width, screen_height):
+        pygame.event.clear()
         pygame.display.set_caption("Python Tetris Menu")
         
         while True:
@@ -32,10 +33,13 @@ class Menus:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if play_button.checkForInput(menu_mouse_pos):
+                        pygame.event.clear()
                         return "play"
                     if clear40_button.checkForInput(menu_mouse_pos): 
+                        pygame.event.clear()
                         return "clear40"
                     if settings_button.checkForInput(menu_mouse_pos):
+                        pygame.event.clear()
                         return "settings"
                     if quit_button.checkForInput(menu_mouse_pos):
                         pygame.quit()
@@ -56,7 +60,7 @@ class Menus:
             gameover_text = pygame.font.Font(FONT_PATH, 75).render("GAME OVER", True, "white")
             gameover_rect = gameover_text.get_rect(center=(screen_width * 0.5, screen_height * 0.25))
             menu_text = pygame.font.Font(FONT_PATH, 80).render("GAME OVER", True, "white")
-            menu_text = pygame.font.Font(FONT_PATH, 80).render(str(score), True, "black")
+            menu_text = pygame.font.Font(FONT_PATH, 80).render(str(score), True, "white")
             menu_rect = menu_text.get_rect(center=(screen_width * 0.5, screen_height * 0.35))
             
             # Menu buttons
@@ -117,12 +121,16 @@ class Menus:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if resume_button.checkForInput(mouse_pos):
+                        pygame.event.clear()
                         return"resume"
                     if restart_button.checkForInput(mouse_pos):
+                        pygame.event.clear()
                         return "restart"
                     if controls_button.checkForInput(mouse_pos):
+                        pygame.event.clear()
                         return "controls"
                     if main_menu_button.checkForInput(mouse_pos):
+                        pygame.event.clear()
                         return "main_menu"
                     if quit_button.checkForInput(mouse_pos):
                         pygame.quit()
