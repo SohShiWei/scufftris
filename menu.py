@@ -16,13 +16,13 @@ class Menus:
             
             # Menu buttons
             play_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.5), text_input="PLAY", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
-            sprint_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.60), text_input="SPRINT MODE", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            clear40_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.60), text_input="40 LINES", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
             settings_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.70), text_input="SETTINGS", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
             quit_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.80), text_input="QUIT", font=pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
             
             screen.blit(menu_text, menu_rect)
             
-            for button in [play_button, settings_button, quit_button, sprint_button]:
+            for button in [play_button, settings_button, quit_button, clear40_button]:
                 button.changeColor(menu_mouse_pos)
                 button.update(screen)
             
@@ -33,10 +33,10 @@ class Menus:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if play_button.checkForInput(menu_mouse_pos):
                         return "play"
+                    if clear40_button.checkForInput(menu_mouse_pos): 
+                        return "clear40"
                     if settings_button.checkForInput(menu_mouse_pos):
                         return "settings"
-                    if sprint_button.checkForInput(menu_mouse_pos): 
-                        return "sprint"
                     if quit_button.checkForInput(menu_mouse_pos):
                         pygame.quit()
                         sys.exit()
@@ -49,22 +49,24 @@ class Menus:
         game_over = False
         
         while True:
-            screen.fill(Colors.CYAN)
+            #screen.fill(Colors.CYAN)
 
             menu_mouse_pos = pygame.mouse.get_pos()
             
-            menu_text = pygame.font.Font(FONT_PATH, 80).render("GAME OVER", True, "black")
+            gameover_text = pygame.font.Font(FONT_PATH, 75).render("GAME OVER", True, "white")
+            gameover_rect = gameover_text.get_rect(center=(screen_width * 0.5, screen_height * 0.25))
+            menu_text = pygame.font.Font(FONT_PATH, 80).render("GAME OVER", True, "white")
             menu_text = pygame.font.Font(FONT_PATH, 80).render(str(score), True, "black")
             menu_rect = menu_text.get_rect(center=(screen_width * 0.5, screen_height * 0.35))
             
             # Menu buttons
-            TryAgain_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.5), text_input="TRY AGAIN?", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
-            Back_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.6), text_input="BACK TO MENU", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
-            Quit_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.7), text_input="QUIT", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            TryAgain_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.5), text_input="TRY AGAIN?", font = pygame.font.Font(FONT_PATH, 50), base_color="white", hovering_color="red")
+            Back_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.6), text_input="MENU", font = pygame.font.Font(FONT_PATH, 50), base_color="white", hovering_color="red")
             
+            screen.blit(gameover_text, gameover_rect)
             screen.blit(menu_text, menu_rect)
             
-            for button in [TryAgain_button, Back_button, Quit_button]:
+            for button in [TryAgain_button, Back_button]:
                 button.changeColor(menu_mouse_pos)
                 button.update(screen)
             
@@ -74,13 +76,11 @@ class Menus:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if TryAgain_button.checkForInput(menu_mouse_pos):
+                        game_over = True
                         return game_over
                     if Back_button.checkForInput(menu_mouse_pos):
                         self.main_menu(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT)
                         return game_over
-                    if Quit_button.checkForInput(menu_mouse_pos):
-                        pygame.quit()
-                        sys.exit()
             
             pygame.display.update()
         
@@ -161,6 +161,7 @@ class Menus:
                         self.controls_menu(screen, controls, screen_width, screen_height)
                     if handling_button.checkForInput(mouse_pos):
                         self.handling_menu(screen, screen_width, screen_height)
+                        return game_over
                     if back_button.checkForInput(mouse_pos):
                         return
             
@@ -296,8 +297,10 @@ class Menus:
             # Update the text surfaces for speed and movement delay
             speed_surface = pygame.font.Font(FONT_PATH, 30).render(f"SPEED: {speed}", True, Colors.BLACK)
             move_surface = pygame.font.Font(FONT_PATH, 30).render(f"MOVEMENT: {move_delay}", True, Colors.BLACK)
-            screen.blit(speed_surface, (screen_width * 0.25, screen_height * 0.05))
-            screen.blit(move_surface, (screen_width * 0.25, screen_height * 0.25))
+            speed_rect = speed_surface.get_rect(center=(screen_width*0.5, screen_height*0.1))
+            move_rect = move_surface.get_rect(center=(screen_width*0.5, screen_height*0.3))
+            screen.blit(speed_surface, speed_rect)
+            screen.blit(move_surface, move_rect)
             pygame.display.update() 
         
         
