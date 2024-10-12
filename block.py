@@ -26,8 +26,8 @@ class Block:
 
         for position in tiles:
             # Create a new Position object with updated offsets for each tile.
-            position = Position(position.row + self.row_offset, position.column + self.column_offset)
-            moved_tiles.append(position)  # Add the new position to the list
+            new_position = Position(position.row + self.row_offset, position.column + self.column_offset)
+            moved_tiles.append(new_position)  # Add the new position to the list
 
         return moved_tiles  # Return the list of updated positions
 

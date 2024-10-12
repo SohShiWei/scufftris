@@ -81,16 +81,14 @@ class Sprint(Game):
         GAME_UPDATE = pygame.USEREVENT
         pygame.time.set_timer(GAME_UPDATE, self.speed)  # Set the event to trigger every `speed` milliseconds
         
-        # Fonts and text surfaces for rendering on the screen
+        # Score and Preview surface and rect and font
         title_font = pygame.font.Font(FONT_PATH, 30)  # Font for titles (e.g., "Score", "Next")
 
-        # Render static text surfaces for "Score", "Next", and "GAME OVER"
         score_surface = title_font.render("SCORE", True, Colors.BLACK)
         next_surface = title_font.render("NEXT", True, Colors.BLACK)
         
-        # Rectangles for positioning the score and next block sections
-        score_rect = pygame.Rect(320, 55, 170, 60)  # Score box on the right of the screen
-        next_rect = pygame.Rect(320, 150, 170, 180)  # Next block preview box
+        score_rect = pygame.Rect(320, 55, 170, 60)
+        next_rect = pygame.Rect(320, 215, 170, 180)
         
         while not self.game_over and not self.game_ended:
             
@@ -175,19 +173,16 @@ class Sprint(Game):
             if self.game_ended:
                 self.end_game(screen, due_to_time=True)
                 return
-            if self.game_over:  # If the game is over, display the "GAME OVER" text
-                back = Menus().gameover(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT,self.score)
-                self.reset()
-                self.game_over = False
-                if back == True:
-                    return
+            elif self.game_over:
+                self.end_game(screen, due_to_time=False)
+                return
                 
             # Draw game state
             score_value_surface = title_font.render(str(self.score), True, Colors.WHITE)
             screen.fill(Colors.DARK_BLUE)
             self.draw(screen)
             screen.blit(score_surface, (365, 20, 50, 50))
-            screen.blit(next_surface, (375, 120, 50, 50))  # Draw the "Next" title for the next block preview
+            screen.blit(next_surface, (375, 180, 50, 50))
             
             pygame.draw.rect(screen, Colors.LIGHT_BLUE, score_rect, 0, 10)
             screen.blit(score_value_surface, score_value_surface.get_rect(centerx=score_rect.centerx, centery=score_rect.centery))
