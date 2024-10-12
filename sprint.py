@@ -194,11 +194,14 @@ class Sprint(Game):
                     return
                 
             # Draw game state
-            score_value_surface = title_font.render(str(self.score), True, Colors.WHITE)
             screen.fill(Colors.BLUE)
+            score_value_surface = title_font.render(str(self.score), True, Colors.WHITE)
             self.draw(screen)
             screen.blit(score_surface, (350, 20, 50, 50))
             screen.blit(next_surface, (360, 115, 50, 50))  # Draw the "Next" title for the next block preview
+            
+            time_rect = pygame.Rect(320, 550, 170, 65)  # Define a rectangle for the "hold" box
+            pygame.draw.rect(screen, Colors.DARK_GREY, time_rect, 0, 10)
             
             pygame.draw.rect(screen, Colors.DARK_GREY, score_rect, 0, 10)
             screen.blit(score_value_surface, score_value_surface.get_rect(centerx=score_rect.centerx, centery=score_rect.centery))
@@ -206,10 +209,15 @@ class Sprint(Game):
             self.draw(screen)
             
             # Display the countdown timer
-            time_left = max(0, self.time_limit - elapsed_time) // 1000  # Convert to seconds
-            font = pygame.font.Font(FONT_PATH, 15)
-            timer_text = font.render(f"TIME LEFT: {time_left} S", True, Colors.WHITE)
-            screen.blit(timer_text, (350, 590))  # Display timer at the bottom-right
+            time_left_seconds = max(0, self.time_limit - elapsed_time) // 1000  # Convert to seconds
+            minutes = time_left_seconds // 60
+            seconds = time_left_seconds % 60
+            # Format the time into mm:ss
+            formatted_time = f"{minutes:02}:{seconds:02}"
+            
+            font = pygame.font.Font(FONT_PATH, 35)
+            timer_text = font.render(f"{formatted_time}", True, Colors.WHITE)
+            screen.blit(timer_text, (355, 560))  # Display timer at the bottom-right
 
             pygame.display.update()
             clock.tick(FPS)

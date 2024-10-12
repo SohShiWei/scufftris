@@ -175,7 +175,7 @@ class clear40(Game):
 
             # Draw the game state
             screen.fill(Colors.BLUE)
-            score_value_surface = title_font.render(str(self.score), True, Colors.ORANGE)
+            score_value_surface = title_font.render(str(self.score), True, Colors.WHITE)
             self.draw(screen)
             screen.blit(score_surface, (350, 20, 50, 50))
             screen.blit(next_surface, (360, 115, 50, 50))  # Draw the "Next" title for the next block preview
@@ -188,13 +188,22 @@ class clear40(Game):
             pygame.draw.rect(screen, Colors.DARK_GREY, next_rect, 0, 10)
             self.draw(screen)
 
+            # Convert elapsed time in milliseconds to seconds
+            elapsed_time_seconds = self.elapsed_time
+            
+            # Calculate minutes and seconds
+            minutes = elapsed_time_seconds // 60
+            seconds = elapsed_time_seconds % 
+            # Format time as mm:ss
+            formatted_elapsed_time = f"{minutes:02}:{seconds:02}"
+            
             time_font = pygame.font.Font(None, 30)
-            time_text = time_font.render(f"Time: {self.elapsed_time} s", True, Colors.ORANGE)
-            screen.blit(time_text, (330, 555))
+            time_text = time_font.render(f"Time: {formatted_elapsed_time}", True, Colors.WHITE)
+            screen.blit(time_text, (330, 560))
 
             lines_font = pygame.font.Font(None, 30)
-            lines_cleared_text = lines_font.render(f"Lines: {self.lines_cleared}/{target_lines}", True, Colors.ORANGE)    # Use the lines_cleared variable
-            screen.blit(lines_cleared_text, (330, 590))
+            lines_cleared_text = lines_font.render(f"Lines: {self.lines_cleared}/{target_lines}", True, Colors.WHITE)    # Use the lines_cleared variable
+            screen.blit(lines_cleared_text, (330, 585))
 
             pygame.display.update()
             clock.tick(FPS)

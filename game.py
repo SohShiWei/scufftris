@@ -83,9 +83,9 @@ class Game:
                             self.rotate_counterclockwise()   
                         if event.key == controls['hold']:
                             self.hold()
-                    if self.game_over == True:  # Reset the game if it's over
-                            self.game_over = False
-                            self.reset()
+                    # if self.game_over == True:  # Reset the game if it's over
+                    #         self.game_over = False
+                    #         self.reset()
 
             if not self.paused and not self.game_over:
                 keys = pygame.key.get_pressed()
@@ -232,9 +232,11 @@ class Game:
         while self.block_inside(self.current_block) and self.block_fits(self.current_block, row_offset=1):
             self.current_block.move(1, 0)  # Move down by 1 row
         
-        # Once the block can no longer move down, lock it in place
-        self.lock_block()
+        if not self.block_inside(self.current_block):
+            self.game_over = True
+            return
         
+        self.lock_block() 
         self.update_score(0, 10)  # Add score for the hard drop
             
     def lock_block(self):
@@ -323,12 +325,10 @@ class Game:
             
             # Ensure the block is inside the grid bounds
             if row < 0 or row >= len(self.grid.grid) or column < 0 or column >= len(self.grid.grid[0]):
-                print(f"Block out of bounds at row {row}, column {column}")
                 return False
 
             # Ensure the block does not overlap with filled cells in the grid
             if not self.grid.is_empty(row, column):
-                print(f"Block collided with filled cell at row {row}, column {column}")
                 return False
             
         return True
