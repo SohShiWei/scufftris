@@ -107,6 +107,7 @@ default_controls = {
     'down': pygame.K_s,
     'rotate': pygame.K_w,
     'hard_drop': pygame.K_SPACE,
+    'hold': pygame.K_e
 }
 
 # Controls that can be changed

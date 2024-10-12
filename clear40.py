@@ -7,8 +7,6 @@ from blocks import *
 
 class clear40(Game):
     
-    global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer, last_click_time, controls
-    
     def __init__(self, target_lines):
         super().__init__()  # Call the initializer of the Game class
         self.target_lines = target_lines  # Number of lines to clear
@@ -52,6 +50,7 @@ class clear40(Game):
         screen.blit(restart_text, (DISPLAY_WIDTH // 2 - 200, DISPLAY_HEIGHT // 2 + 20))
         
     def play(self, screen):
+        global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer, last_click_time, controls
         # Main game loop (runs continuously)
         clock = pygame.time.Clock()
 

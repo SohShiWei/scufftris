@@ -6,9 +6,7 @@ from menu import Menus
 
 
 class Game:
-    
-    global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer, last_click_time, controls
-    
+     
     def __init__(self):
         # Initializes the game with an empty grid, block queue, and starting block
         self.grid = Grid()
@@ -19,6 +17,9 @@ class Game:
         self.game_over = False  # A flag to track if the game is over
         self.score = 0  # Keeps track of the player's score
         self.paused = False # Flag to track if the game is paused
+        # hold tetromino function
+        self.hold_block = None
+        self.hold_used = False
         
         # Load sounds for rotating blocks and clearing rows
         self.rotate_sound = pygame.mixer.Sound("Sounds/rotate.wav")
@@ -31,6 +32,7 @@ class Game:
         pygame.mixer.music.set_volume(0.3) # Set the volume of the background music
         
     def play(self, screen):
+        global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer, last_click_time, controls
         # Main game loop (runs continuously)
         clock = pygame.time.Clock()
       
@@ -64,6 +66,8 @@ class Game:
                             self.hard_drop()
                         if event.key == controls['rotate']:
                             self.rotate()
+                        if event.key == controls['hold']:
+                            self.hold()
                     if self.game_over == True:  # Reset the game if it's over
                             self.game_over = False
                             self.reset()
@@ -133,7 +137,6 @@ class Game:
             screen.blit(score_value_surface, score_value_surface.get_rect(centerx=score_rect.centerx, centery=score_rect.centery))
             pygame.draw.rect(screen, Colors.LIGHT_BLUE, next_rect, 0, 10)  # Draw the rectangle for the next block preview
             self.draw(screen)  # Draw the current state of the game (grid and blocks)
-                   
             # Blit game_screen onto the main screen
             main_screen = pygame.display.get_surface()
             main_screen.blit(screen, (0, 0))
@@ -200,6 +203,7 @@ class Game:
             self.grid.grid[position.row][position.column] = self.current_block.id
         self.current_block = self.next_block  # Move to the next block
         self.next_block = self.get_random_block()  # Prepare a new block
+        self.hold_used = False
         rows_cleared = self.grid.clear_full_rows()  # Check if any rows were completed
         if rows_cleared > 0:
             self.clear_sound.play()  # Play sound if rows were cleared
@@ -222,6 +226,7 @@ class Game:
             if self.grid.is_empty(tile.row, tile.column) == False:  # Check if tile is in an empty cell
                 return False
         return True
+    
 
     def rotate(self):
         # Rotates the current block and checks if it fits
@@ -246,6 +251,31 @@ class Game:
             shadow_block.move(1, 0) # Shadow block is placed at the bottom
         shadow_block.move(-1, 0) # Place shadow block 1 row up if it does not fit
         return shadow_block
+    
+    def hold(self):
+        global move_left_timer, move_right_timer, move_down_timer
+        if self.hold_used:
+            return # Allow holding only once per drop
+        
+        if self.hold_block is None:
+            # If no block is held, move current block to hold and generate next block
+            self.hold_block = self.current_block
+            self.current_block = self.next_block
+            self.next_block = self.get_random_block()
+        else:
+            # Swap the current block
+            self.hold_block, self.current_block = self.current_block, self.hold_block
+            
+        # Reset position of the block    
+        self.hold_block.row_offset = 0  # Reset the position of the block when it comes out of hold
+        self.hold_block.column_offset = 3  # Center it horizontally
+            
+        # reset position of the movement timer
+        move_left_timer = pygame.time.get_ticks()
+        move_right_timer = pygame.time.get_ticks()
+        move_down_timer = pygame.time.get_ticks()
+        
+        self.hold_used = True #Preven hold until next block is locked
 
     def draw(self, screen):
         # Draws the grid and the current and next blocks on the screen
@@ -261,3 +291,18 @@ class Game:
             self.next_block.draw(screen, 255, 280)
         else:
             self.next_block.draw(screen, 270, 270)  # For all other blocks
+            
+        # Display Hold rectangle
+        title_font = pygame.font.Font(FONT_PATH, 30)
+        hold_surface = title_font.render("HOLD", True, Colors.BLACK)
+        hold_rect = pygame.Rect(320, 400, 170, 180)  # Define a rectangle for the "hold" box
+        screen.blit(hold_surface, (375, 370, 50, 50))  # Draw the "Hold" label
+        pygame.draw.rect(screen, Colors.LIGHT_BLUE, hold_rect, 0, 10)  # Draw the rectangle for the hold block preview   
+        # Draw the hold blocks
+        if self.hold_block:
+            if self.hold_block.id == 3:  # Adjust the position for the OBlock
+                self.hold_block.draw(screen, 255, 440)
+            elif self.hold_block.id == 4:  # Adjust the position for the TBlock
+                self.hold_block.draw(screen, 255, 430)
+            else:
+                self.hold_block.draw(screen, 270, 420)
