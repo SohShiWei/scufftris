@@ -7,8 +7,6 @@ from blocks import *
 
 class Sprint(Game):
 
-    global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer, last_click_time, controls, speed_increment_threshold, time_limit
-
     def __init__(self):
         super().__init__()
         self.start_time = pygame.time.get_ticks()  # Store the starting time
@@ -76,7 +74,7 @@ class Sprint(Game):
         pygame.time.wait(3500)  # Wait before returning to the menu    
         
     def play(self, screen):
-        
+        global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer, last_click_time, controls, speed_increment_threshold, time_limit
         clock = pygame.time.Clock()
         
         # Custom event for game update every few milliseconds
@@ -124,6 +122,8 @@ class Sprint(Game):
                             self.hard_drop()
                         if event.key == controls['rotate']:
                             self.rotate()
+                        if event.key == controls['hold']:
+                            self.hold()  
                             
                 if event.type == GAME_UPDATE and not self.paused and not self.game_over:
                     self.move_down()

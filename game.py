@@ -226,7 +226,6 @@ class Game:
             if self.grid.is_empty(tile.row, tile.column) == False:  # Check if tile is in an empty cell
                 return False
         return True
-    
 
     def rotate(self):
         # Rotates the current block and checks if it fits

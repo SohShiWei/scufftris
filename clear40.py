@@ -106,6 +106,8 @@ class clear40(Game):
                             self.hard_drop()
                         if event.key == controls['rotate']:
                             self.rotate()
+                        if event.key == controls['hold']:
+                            self.hold()
                             
                 if event.type == GAME_UPDATE and not self.paused and not self.game_over and not self.win:
                     self.move_down()
