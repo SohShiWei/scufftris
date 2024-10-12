@@ -21,6 +21,8 @@ class Colors:
     PINK = (255, 164, 208)
     GREY = (225, 225, 225)
     BLACK = (0, 0, 0)
+    LIGHT_RED = (255, 102, 102)
+    TLIGHT_BLUE = (59, 85, 162,128)
 
     @classmethod
     def get_cell_colors(cls):
@@ -102,12 +104,12 @@ click_delay = 300  # Delay between mouse clicks (in milliseconds)
 
 # Default controls setting (DO NOT CHANGE)
 default_controls = {
-    'left': pygame.K_j,
-    'right': pygame.K_l,
-    'down': pygame.K_k,
-    'rotate': pygame.K_f,
-    'rotate_ccw': pygame.K_d,
-    'hard_drop': pygame.K_i,
+    'left': pygame.K_a,
+    'right': pygame.K_d,
+    'down': pygame.K_s,
+    'rotate': pygame.K_w,
+    'rotate_ccw': pygame.K_l,
+    'hard_drop': pygame.K_SPACE,
     'hold': pygame.K_e
 }
 
