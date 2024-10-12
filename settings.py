@@ -87,7 +87,7 @@ DISPLAY_HEIGHT = 620
 speed = 600  # Initial speed of the game (block movement down)
 move_delay = 100  # Delay (in milliseconds) to prevent continuous movement when holding keys
 game_over = False
-target_lines = 4
+target_lines = 40
 time_limit = 120000
 speed_increment_threshold = 500
 # Initialize timers for controlling movement (left, right, down)
@@ -102,12 +102,12 @@ click_delay = 300  # Delay between mouse clicks (in milliseconds)
 
 # Default controls setting (DO NOT CHANGE)
 default_controls = {
-    'left': pygame.K_a,
-    'right': pygame.K_d,
-    'down': pygame.K_s,
-    'rotate': pygame.K_w,
-    'rotate_ccw': pygame.K_q,
-    'hard_drop': pygame.K_SPACE,
+    'left': pygame.K_j,
+    'right': pygame.K_l,
+    'down': pygame.K_k,
+    'rotate': pygame.K_f,
+    'rotate_ccw': pygame.K_d,
+    'hard_drop': pygame.K_i,
     'hold': pygame.K_e
 }
 
