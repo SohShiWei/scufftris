@@ -356,6 +356,11 @@ class Game:
             # Swap the current block
             self.hold_block, self.current_block = self.current_block, self.hold_block
             
+        # Reset rotation state of block to default (0)
+        self.hold_block.rotation_state = 0 
+        self.hold_block.update_positions() # Update positions to reflect the default rotation state
+
+            
         # Reset position of the block    
         self.hold_block.row_offset = 0  # Reset the position of the block when it comes out of hold
         self.hold_block.column_offset = 3  # Center it horizontally
