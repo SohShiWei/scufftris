@@ -30,7 +30,7 @@ class Game:
         self.hard_drop_sound = pygame.mixer.Sound("Sounds/harddrop.mp3")
     
         # Load and play background music on loop
-        pygame.mixer.music.load("Sounds/music.ogg")
+        pygame.mixer.music.load("Sounds/OriginalTetristheme.mp3")
         pygame.mixer.music.play(-1)  # -1 means the music loops indefinitely
         pygame.mixer.music.set_volume(0.3) # Set the volume of the background music
         
@@ -43,7 +43,7 @@ class Game:
         GAME_UPDATE = pygame.USEREVENT
         pygame.time.set_timer(GAME_UPDATE, speed) # Set the event to trigger every `speed` milliseconds
         
-        # Fonts and text surfaces for rendering on the screen
+         # Fonts and text surfaces for rendering on the screen
         title_font = pygame.font.Font(FONT_PATH, 30)  # Font for titles (e.g., "Score", "Next")
 
         # Render static text surfaces for "Score", "Next", and "GAME OVER"
@@ -52,7 +52,7 @@ class Game:
         
         # Rectangles for positioning the score and next block sections
         score_rect = pygame.Rect(320, 55, 170, 60)  # Score box on the right of the screen
-        next_rect = pygame.Rect(320, 215, 170, 180)  # Next block preview box
+        next_rect = pygame.Rect(320, 150, 170, 180)  # Next block preview box
         
         while True:
             current_time = pygame.time.get_ticks()
@@ -132,13 +132,12 @@ class Game:
                     self.paused = False  # Ensure the game is unpaused when coming back
                     return
                 
-             # Draw game state
+            # Draw game state
             score_value_surface = title_font.render(str(self.score), True, Colors.WHITE)  # Render current score
             screen.fill(Colors.DARK_BLUE)
             self.draw(screen)
-            game_over_surface = title_font.render("GAME OVER", True, Colors.WHITE)
             screen.blit(score_surface, (365, 20, 50, 50))  # Draw the "Score" title
-            screen.blit(next_surface, (375, 180, 50, 50))  # Draw the "Next" title for the next block preview
+            screen.blit(next_surface, (375, 120, 50, 50))  # Draw the "Next" title for the next block preview
              # Draw rectangles for score and next block areas
             pygame.draw.rect(screen, Colors.LIGHT_BLUE, score_rect, 0, 10)
             # Display the score inside the score rectangle
@@ -352,7 +351,7 @@ class Game:
         self.hold_used = True #Preven hold until next block is locked
 
     def draw(self, screen):
-        # Draws the grid and the current and next blocks on the screen
+         # Draws the grid and the current and next blocks on the screen
         self.grid.draw(screen)  # Draw the grid
         
         self.get_shadow_block().draw(screen, 11, 11, shadow=True)  # Draw a shadow block on the grid
@@ -360,23 +359,23 @@ class Game:
 
         # Draw the next block in a preview box (with slight adjustment for size)
         if self.next_block.id == 3:  # For OBlock, adjust the position slightly
-            self.next_block.draw(screen, 255, 290)
+            self.next_block.draw(screen, 255, 210)
         elif self.next_block.id == 4:  # For TBlock, adjust the position slightly
-            self.next_block.draw(screen, 255, 280)
+            self.next_block.draw(screen, 280, 220)
         else:
-            self.next_block.draw(screen, 270, 270)  # For all other blocks
+            self.next_block.draw(screen, 270, 200)  # For all other blocks
             
         # Display Hold rectangle
         title_font = pygame.font.Font(FONT_PATH, 30)
         hold_surface = title_font.render("HOLD", True, Colors.BLACK)
-        hold_rect = pygame.Rect(320, 400, 170, 180)  # Define a rectangle for the "hold" box
-        screen.blit(hold_surface, (375, 370, 50, 50))  # Draw the "Hold" label
+        hold_rect = pygame.Rect(320, 360, 170, 180)  # Define a rectangle for the "hold" box
+        screen.blit(hold_surface, (375, 330, 50, 50))  # Draw the "Hold" label
         pygame.draw.rect(screen, Colors.LIGHT_BLUE, hold_rect, 0, 10)  # Draw the rectangle for the hold block preview   
         # Draw the hold blocks
         if self.hold_block:
-            if self.hold_block.id == 3:  # Adjust the position for the OBlock
-                self.hold_block.draw(screen, 255, 440)
-            elif self.hold_block.id == 4:  # Adjust the position for the TBlock
-                self.hold_block.draw(screen, 255, 430)
+            if self.hold_block.id == 3:  # Adjust the position for the I Block
+                self.hold_block.draw(screen, 255, 410)
+            elif self.hold_block.id == 4:  # Adjust the position for the O Block
+                self.hold_block.draw(screen, 280, 410)
             else:
-                self.hold_block.draw(screen, 270, 420)
+                self.hold_block.draw(screen, 270, 410)
