@@ -333,7 +333,7 @@ class Menus:
                         self.remap_control(screen, 'hold', controls, screen_height, screen_width)
                         button_remapped = True        
                     if default_button.checkForInput(mouse_pos):
-                        controls = default_controls.copy()
+                        controls.update(default_controls)
                         button_remapped = True
                         print("Returned settings to default!")
                     if back_button.checkForInput(mouse_pos):
