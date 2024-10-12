@@ -43,26 +43,24 @@ class clear40(Game):
     def display_win(self, screen):  # Display the win screen 
         font = pygame.font.Font(None, 74)
         win_text = font.render("You Win!", True, Colors.GREEN)
-        screen.blit(win_text, (DISPLAY_WIDTH // 2 - 120, DISPLAY_HEIGHT // 2 - 50))
+        screen.blit(win_text, (DISPLAY_WIDTH // 2 - 105, DISPLAY_HEIGHT // 2 - 50))
 
         font = pygame.font.Font(None, 36)
-        restart_text = font.render("Press R to Retry Q to Main Menu", True, Colors.WHITE)
-        screen.blit(restart_text, (DISPLAY_WIDTH // 2 - 200, DISPLAY_HEIGHT // 2 + 20))
+        restart_text = font.render("Press R to Retry | Q to Main Menu", True, Colors.WHITE)
+        screen.blit(restart_text, (DISPLAY_WIDTH // 2 - 195, DISPLAY_HEIGHT // 2 + 20))
         
-    def play(self, screen):
+    def play(self, screen):     # Main game loop (runs continuously)
         global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer, last_click_time, controls
-        # Main game loop (runs continuously)
-        clock = pygame.time.Clock()
+        clock = pygame.time.Clock() 
 
         GAME_UPDATE = pygame.USEREVENT
         pygame.time.set_timer(GAME_UPDATE, speed)
-        
+
         # Score and Preview surface and rect and font
         title_font = pygame.font.Font(FONT_PATH, 30)  # Font for titles (e.g., "Score", "Next")
-
         score_surface = title_font.render("SCORE", True, Colors.BLACK)
         next_surface = title_font.render("NEXT", True, Colors.BLACK)
-        
+
         score_rect = pygame.Rect(320, 55, 170, 60)
         next_rect = pygame.Rect(320, 215, 170, 180)
 
@@ -76,6 +74,9 @@ class clear40(Game):
             if not self.paused and not self.game_over and not self.win:
                 self.elapsed_time = (current_time - self.starting - self.pause_time) // 1000  # Subtract pause duration
 
+            if self.lines_cleared >= self.target_lines:  
+                self.win = True  # Set win condition
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -85,21 +86,20 @@ class clear40(Game):
                         if not self.paused:
                             # Pausing the game
                             self.paused = True
-                            self.pause_start_time = pygame.time.get_ticks()  # Record when the pause starts
+                            self.pause_start_time = pygame.time.get_ticks()
                         else:
                             # Unpausing the game
                             self.paused = False
                             self.pause_time += pygame.time.get_ticks() - self.pause_start_time  # Add pause duration to pause_time
-                     
                     if event.key == pygame.K_r and self.win:  # Restart game if 'R' is pressed on win screen
                         self.reset()
-                        self.win = False  # Reset the win condition
-                        self.starting = pygame.time.get_ticks()  # Restart the timer
-                        self.pause_time = 0 #reset pause time
-                    if event.key == pygame.K_q and self.win:  # return to main menu on Q
+                        self.win = False    # Reset the win condition
+                        self.starting = pygame.time.get_ticks()    # Restart the timer
+                        self.pause_time = 0     #Reset pause time
+                    if event.key == pygame.K_q and self.win:  # Return to main menu on 'Q'
                         pygame.event.clear()
                         self.reset()
-                        self.win = False  # Reset the win condition
+                        self.win = False
                         return
                     if not self.paused and not self.game_over and not self.win:
                         if event.key == controls['hard_drop']:
@@ -108,36 +108,39 @@ class clear40(Game):
                             self.rotate()
                         if event.key == controls['hold']:
                             self.hold()
-                            
+
                 if event.type == GAME_UPDATE and not self.paused and not self.game_over and not self.win:
                     self.move_down()
 
             if not self.paused and not self.game_over and not self.win:
                 keys = pygame.key.get_pressed()
-                if (keys[controls['left']]) and current_time - move_left_timer > move_delay:
+                if keys[controls['left']] and current_time - move_left_timer > move_delay:
                     self.move_left()
                     move_left_timer = current_time
-                if (keys[controls['right']]) and current_time - move_right_timer > move_delay:
+                if keys[controls['right']] and current_time - move_right_timer > move_delay:
                     self.move_right()
                     move_right_timer = current_time
-                if (keys[controls['down']]) and current_time - move_down_timer > move_delay:
+                if keys[controls['down']] and current_time - move_down_timer > move_delay:
                     self.move_down()
                     self.update_score(0, 2)
                     move_down_timer = current_time
 
-            if self.game_over:  # If the game is over, display the "GAME OVER" text
-                self.game_over = Menus().gameover(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT,self.score)
+            if self.game_over:      # If the game is over, display the "GAME OVER" text
+                self.game_over = Menus().gameover(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT, self.score)
                 self.reset()
                 self.game_over = False
                 return
-
-            elif self.win:  # If the game is over, display the "YOU WIN" text
+            
+            if self.win:    # If the game is over, display the "YOU WIN" text
                 self.display_win(screen)
- 
+                pygame.display.update()
+                clock.tick(FPS)
+                continue  
+
             if self.paused:
                 # Display pause menu and handle interactions
                 menu_action = Menus().pause_menu(screen, speed, move_delay, DISPLAY_WIDTH, DISPLAY_HEIGHT)
-                
+
                 # Handle the returned action from the pause menu
                 if menu_action == "resume":
                     pygame.event.clear()
@@ -158,15 +161,14 @@ class clear40(Game):
                     self.reset()  # Reset game state when returning to the main menu
                     self.paused = False  # Ensure the game is unpaused when coming back
                     return
-                
-             # Draw game state
-            score_value_surface = title_font.render(str(self.score), True, Colors.WHITE)
+
+            # Draw the game state
             screen.fill(Colors.DARK_BLUE)
+            score_value_surface = title_font.render(str(self.score), True, Colors.WHITE)
             self.draw(screen)
-            title_font.render("GAME OVER", True, Colors.WHITE)
             screen.blit(score_surface, (365, 20, 50, 50))
             screen.blit(next_surface, (375, 180, 50, 50))
-            
+
             pygame.draw.rect(screen, Colors.LIGHT_BLUE, score_rect, 0, 10)
             screen.blit(score_value_surface, score_value_surface.get_rect(centerx=score_rect.centerx, centery=score_rect.centery))
             pygame.draw.rect(screen, Colors.LIGHT_BLUE, next_rect, 0, 10)
@@ -177,8 +179,8 @@ class clear40(Game):
             screen.blit(time_text, (320, 555))
 
             lines_font = pygame.font.Font(None, 30)
-            lines_cleared_text = lines_font.render(f"Lines cleared: {self.lines_cleared}", True, Colors.WHITE)  # Use the lines_cleared variable
+            lines_cleared_text = lines_font.render(f"Lines cleared: {self.lines_cleared}", True, Colors.WHITE)    # Use the lines_cleared variable
             screen.blit(lines_cleared_text, (320, 590))
-               
+
             pygame.display.update()
             clock.tick(FPS)

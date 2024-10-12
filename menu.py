@@ -61,7 +61,7 @@ class Menus:
 
             menu_mouse_pos = pygame.mouse.get_pos()
             
-            gameover_text = pygame.font.Font(FONT_PATH, 75).render("GAME OVER", True, "white")
+            gameover_text = pygame.font.Font(FONT_PATH, 75).render("GAME OVER", True, "red")
             gameover_rect = gameover_text.get_rect(center=(screen_width * 0.5, screen_height * 0.25))
             menu_text = pygame.font.Font(FONT_PATH, 80).render("GAME OVER", True, "white")
             menu_text = pygame.font.Font(FONT_PATH, 80).render(str(score), True, "white")
