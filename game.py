@@ -21,8 +21,8 @@ class Game:
         self.hold_block = None
         self.hold_used = False
         # lock delay function
-        self.lock_delay = 700  # Time in milliseconds before the block locks
-        self.lock_timer = 0  # Timer to track how long the block has been at the bottom
+        self.lock_delay = 0  # Time in milliseconds before the block locks
+        self.lock_timer = 500  # Timer to track how long the block has been at the bottom
         
         # Load sounds for rotating blocks and clearing rows
         self.rotate_sound = pygame.mixer.Sound("Sounds/rotate.wav")
@@ -55,11 +55,15 @@ class Game:
         next_rect = pygame.Rect(320, 150, 170, 180)  # Next block preview box
         
         while True:
+            
             current_time = pygame.time.get_ticks()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                    
+                if event.type == GAME_UPDATE and not self.paused and not self.game_over:
+                    self.move_down()
                     
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_p:
@@ -76,9 +80,6 @@ class Game:
                     if self.game_over == True:  # Reset the game if it's over
                             self.game_over = False
                             self.reset()
-                            
-                if event.type == GAME_UPDATE and not self.paused and not self.game_over:
-                    self.move_down()
 
             if not self.paused and not self.game_over:
                 keys = pygame.key.get_pressed()
@@ -92,15 +93,19 @@ class Game:
                     self.move_right()
                     move_right_timer = current_time
                     # print(self.score)
-                if (keys[controls['down']]) and pygame.time.get_ticks() - move_down_timer > move_delay:
+                if (keys[controls['down']]) and current_time - move_down_timer > move_delay:
                     if self.block_fits(self.current_block, row_offset=1):
                         # print(current_time , move_down_timer , move_delay)
                         self.move_down()
                         self.update_score(0, 2)
                         move_down_timer = pygame.time.get_ticks()
                     else:
-                        self.lock_block()  # Lock if it can’t move further
-                        move_down_timer = current_time
+                        if self.lock_timer == 0:
+                            self.lock_timer = pygame.time.get_ticks()# Start the lock timer if not already started
+
+                        if pygame.time.get_ticks() - self.lock_timer > self.lock_delay:
+                            self.lock_block()  # Lock the block in place if the delay has passed**
+                            move_down_timer = current_time
 
             if self.game_over:  # If the game is over, display the "GAME OVER" text
                 self.game_over = Menus().gameover(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT,self.score)
@@ -185,28 +190,33 @@ class Game:
     def move_left(self):
         # Moves the current block left and checks if it remains inside and fits
         self.current_block.move(0, -1)
-        if self.block_inside(self.current_block) == False or self.block_fits(self.current_block) == False:
+        if not self.block_fits(self.current_block):
+        #if self.block_inside(self.current_block) == False or self.block_fits(self.current_block) == False:
             self.current_block.move(0, 1)  # Undo the move if invalid
 
     def move_right(self):
         # Moves the current block right and checks if it remains inside and fits
         self.current_block.move(0, 1)
-        if self.block_inside(self.current_block) == False or self.block_fits(self.current_block) == False:
+        if not self.block_fits(self.current_block):
+        #if self.block_inside(self.current_block) == False or self.block_fits(self.current_block) == False:
             self.current_block.move(0, -1)  # Undo the move if invalid
-
+            
     def move_down(self):
-        # Move the block down by one row if possible
-            if self.block_fits(self.current_block, row_offset=1):
-                self.current_block.row_offset += 1
-                self.lock_timer = 0 # Reset lock timer if the block moves down
-            else:
-                # Lock the block in place if it can't move down further
-                if self.lock_timer == 0:
-                    self.lock_timer = pygame.time.get_ticks()  # Start the lock timer
-                    
-            if pygame.time.get_ticks() - self.lock_timer > self.lock_delay and self.lock_timer != 0:
-                self.lock_block()  # Lock the block in place if it can't move down further
-                
+        # Check if the block can move down by one row
+        if self.block_fits(self.current_block, row_offset=1):
+            # Move the block down by one row
+            self.current_block.row_offset += 1
+            self.lock_timer = 0  # Reset lock timer if the block successfully moves down
+        else:
+            # Start the lock timer if the block is colliding
+            if self.lock_timer == 0:
+                self.lock_timer = pygame.time.get_ticks()  # Start the lock timer if not already started
+
+            # If the lock delay time has passed, lock the block in place
+            if pygame.time.get_ticks() - self.lock_timer > self.lock_delay:
+                self.lock_block()  # Lock the block in place
+                self.lock_timer = 0  # Reset the lock timer for the next block           
+
     def hard_drop(self):
         # Move the block down until it no longer fits
         while self.block_inside(self.current_block) and self.block_fits(self.current_block, row_offset=1):
@@ -218,27 +228,31 @@ class Game:
         # Play the hard drop sound and update the score
         self.hard_drop_sound.play()
         self.update_score(0, 10)  # Add score for the hard drop
-
+            
     def lock_block(self):
-        # Locks the current block in the grid and prepares the next block
-        tiles = self.current_block.get_cell_positions()  # Get the block's current positions
+        # Lock the current block into the grid
+        tiles = self.current_block.get_cell_positions()
         for position in tiles:
-            if 0 <= position.row < len(self.grid.grid) and 0 <= position.column < len(self.grid.grid[0]):
-            # Set the block's id in the grid to lock its position
+            if self.grid.is_inside(position.row, position.column):
                 self.grid.grid[position.row][position.column] = self.current_block.id
-                
-        self.current_block = self.next_block  # Move to the next block
-        self.next_block = self.get_random_block()  # Prepare a new block
+            # if 0 <= popositionssition.row < len(self.grid.grid) and 0 <= position.column < len(self.grid.grid[0]):
+            #     self.grid.grid[position.row][position.column] = self.current_block.id
+                    
+        # Prepare the next block and reset necessary variables
+        self.current_block = self.next_block
+        self.next_block = self.get_random_block()
         self.lock_timer = 0
         self.hold_used = False
         
-        rows_cleared = self.grid.clear_full_rows()  # Check if any rows were completed
+        # Clear full rows and update score
+        rows_cleared = self.grid.clear_full_rows()
         if rows_cleared > 0:
-            self.clear_sound.play()  # Play sound if rows were cleared
-            self.update_score(rows_cleared, 0)  # Update score based on cleared rows
-            
-        if self.block_fits(self.current_block) == False:
-            self.game_over = True  # End the game if a new block can't fit
+            self.clear_sound.play()
+            self.update_score(rows_cleared, 0)
+
+        # Check if the new block fits; if not, the game is over
+        if not self.block_fits(self.current_block):
+            self.game_over = True
 
     def reset(self):
         # Resets the game to the initial state (empty grid, new blocks, reset score)
@@ -295,21 +309,24 @@ class Game:
             block.move(-row_offset, -col_offset)
             
         return False  # No valid position found with wall kicks
-            
+    
     def block_fits(self, block, row_offset=0, column_offset=0):
-        # Check if the block fits in the grid after rotation
-        for position in block.positions:
+        for position in block.get_cell_positions():
             row = position.row + row_offset
             column = position.column + column_offset
             
-            # Ensure the position is within the grid bounds
+            # Ensure the block is inside the grid bounds
             if row < 0 or row >= len(self.grid.grid) or column < 0 or column >= len(self.grid.grid[0]):
+                print(f"Block out of bounds at row {row}, column {column}")
                 return False
-            # Ensure the position does not overlap with filled cells in the grid
-            if self.grid.grid[row][column] != 0:
+
+            # Ensure the block does not overlap with filled cells in the grid
+            if not self.grid.is_empty(row, column):
+                print(f"Block collided with filled cell at row {row}, column {column}")
                 return False
+            
         return True
- 
+
     def block_inside(self, block):
         # Checks if the current block is completely within the grid boundaries
         for position in block.get_cell_positions():

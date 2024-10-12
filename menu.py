@@ -78,9 +78,9 @@ class Menus:
             # screen.fill(Colors.DARK_BLUE)
 
             # Semi-transparent overlay
-            overlay = screen
+            overlay = pygame.Surface((screen_width, screen_height))
             overlay.set_alpha(150)
-            overlay.fill(Colors.BLACK)
+            overlay.fill((0, 0, 0))
             screen.blit(overlay, (0, 0))
 
             elapsed_time = pygame.time.get_ticks() - start_time
@@ -159,33 +159,12 @@ class Menus:
         pygame.display.set_caption("Game Paused!")
         
         def draw_buttons():
+            # Define buttons for each control setting (Left, Right, Down, Rotate)
             
-            rect_surface = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
-            rect_surface.fill(Colors.TLIGHT_BLUE)  # Semi-transparent red
-
-            # Blit the surface onto the main screen
-            screen.blit(rect_surface, (0,0))
-            pygame.display.flip()
-
-
-            
-            # Render title with outline or shadow for a more appealing look
-            title_font = pygame.font.Font(FONT_PATH, 100)
-
-            # Create shadow effect by rendering the title slightly offset
-            title_shadow = title_font.render("PAUSED", True, Colors.BLACK)
-            titleshadow_rect = title_shadow.get_rect(center=(screen_width * 0.5+5, screen_height * 0.2+5))
-            screen.blit(title_shadow, titleshadow_rect)
-            
-             # Render the title
-            title_text = title_font.render("PAUSED", True, Colors.WHITE)
-            title_rect = title_text.get_rect(center=(screen_width * 0.5, screen_height * 0.2))
-            screen.blit(title_text, title_rect)
-
             # Menu buttons
-            resume_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.4), text_input="RESUME", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
-            restart_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.5), text_input="RESTART", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
-            controls_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.6), text_input="CONTROLS", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            resume_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.1), text_input="RESUME", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            restart_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.3), text_input="RESTART", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
+            controls_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.5), text_input="CONTROLS", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
             main_menu_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.7), text_input="MAIN MENU", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
             quit_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.9), text_input="QUIT", font = pygame.font.Font(FONT_PATH, 50), base_color="black", hovering_color="red")
             
@@ -195,6 +174,7 @@ class Menus:
         resume_button, restart_button, controls_button, main_menu_button, quit_button = draw_buttons()
         
         while True:
+            screen.fill(Colors.LIGHT_BLUE)  # Background color for settings menu
             mouse_pos = pygame.mouse.get_pos()
             
             for button in [resume_button, restart_button, controls_button, main_menu_button, quit_button]:
