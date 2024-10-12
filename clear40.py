@@ -193,7 +193,7 @@ class clear40(Game):
             
             # Calculate minutes and seconds
             minutes = elapsed_time_seconds // 60
-            seconds = elapsed_time_seconds % 
+            seconds = elapsed_time_seconds % 60
             # Format time as mm:ss
             formatted_elapsed_time = f"{minutes:02}:{seconds:02}"
             
