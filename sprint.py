@@ -85,12 +85,12 @@ class Sprint(Game):
         title_font = pygame.font.Font(FONT_PATH, 30)  # Font for titles (e.g., "Score", "Next")
 
         # Render static text surfaces for "Score", "Next", and "GAME OVER"
-        score_surface = title_font.render("SCORE", True, Colors.BLACK)
-        next_surface = title_font.render("NEXT", True, Colors.BLACK)
+        score_surface = title_font.render("SCORE", True, Colors.ORANGE)
+        next_surface = title_font.render("NEXT", True, Colors.ORANGE)
         
         # Rectangles for positioning the score and next block sections
         score_rect = pygame.Rect(320, 55, 170, 60)  # Score box on the right of the screen
-        next_rect = pygame.Rect(320, 150, 170, 180)  # Next block preview box
+        next_rect = pygame.Rect(320, 150, 170, 170)  # Next block preview box
         
         while not self.game_over and not self.game_ended:
             
@@ -124,6 +124,8 @@ class Sprint(Game):
                             self.hard_drop()
                         if event.key == controls['rotate']:
                             self.rotate()
+                        if event.key == controls['rotate_ccw']:
+                            self.rotate_counterclockwise()   
                         if event.key == controls['hold']:
                             self.hold()  
                             
@@ -184,14 +186,14 @@ class Sprint(Game):
                 
             # Draw game state
             score_value_surface = title_font.render(str(self.score), True, Colors.WHITE)
-            screen.fill(Colors.DARK_BLUE)
+            screen.fill(Colors.BLUE)
             self.draw(screen)
-            screen.blit(score_surface, (365, 20, 50, 50))
-            screen.blit(next_surface, (375, 120, 50, 50))  # Draw the "Next" title for the next block preview
+            screen.blit(score_surface, (350, 20, 50, 50))
+            screen.blit(next_surface, (360, 115, 50, 50))  # Draw the "Next" title for the next block preview
             
-            pygame.draw.rect(screen, Colors.LIGHT_BLUE, score_rect, 0, 10)
+            pygame.draw.rect(screen, Colors.DARK_GREY, score_rect, 0, 10)
             screen.blit(score_value_surface, score_value_surface.get_rect(centerx=score_rect.centerx, centery=score_rect.centery))
-            pygame.draw.rect(screen, Colors.LIGHT_BLUE, next_rect, 0, 10)
+            pygame.draw.rect(screen, Colors.DARK_GREY, next_rect, 0, 10)
             self.draw(screen)
             
             # Display the countdown timer

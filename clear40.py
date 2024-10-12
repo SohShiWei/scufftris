@@ -60,12 +60,12 @@ class clear40(Game):
         title_font = pygame.font.Font(FONT_PATH, 30)  # Font for titles (e.g., "Score", "Next")
 
         # Render static text surfaces for "Score", "Next", and "GAME OVER"
-        score_surface = title_font.render("SCORE", True, Colors.BLACK)
-        next_surface = title_font.render("NEXT", True, Colors.BLACK)
+        score_surface = title_font.render("SCORE", True, Colors.ORANGE)
+        next_surface = title_font.render("NEXT", True, Colors.ORANGE)
         
         # Rectangles for positioning the score and next block sections
         score_rect = pygame.Rect(320, 55, 170, 60)  # Score box on the right of the screen
-        next_rect = pygame.Rect(320, 150, 170, 180)  # Next block preview box
+        next_rect = pygame.Rect(320, 150, 170, 170)  # Next block preview box
 
         self.starting = pygame.time.get_ticks()   # Start timer only when the game loop begins
         self.pause_time = 0  # Track how long the game is paused
@@ -109,6 +109,8 @@ class clear40(Game):
                             self.hard_drop()
                         if event.key == controls['rotate']:
                             self.rotate()
+                        if event.key == controls['rotate_ccw']:
+                            self.rotate_counterclockwise()   
                         if event.key == controls['hold']:
                             self.hold()
 
@@ -168,24 +170,27 @@ class clear40(Game):
                     return
 
             # Draw the game state
-            screen.fill(Colors.DARK_BLUE)
-            score_value_surface = title_font.render(str(self.score), True, Colors.WHITE)
+            screen.fill(Colors.BLUE)
+            score_value_surface = title_font.render(str(self.score), True, Colors.ORANGE)
             self.draw(screen)
-            screen.blit(score_surface, (365, 20, 50, 50))
-            screen.blit(next_surface, (375, 120, 50, 50))  # Draw the "Next" title for the next block preview
+            screen.blit(score_surface, (350, 20, 50, 50))
+            screen.blit(next_surface, (360, 115, 50, 50))  # Draw the "Next" title for the next block preview
 
-            pygame.draw.rect(screen, Colors.LIGHT_BLUE, score_rect, 0, 10)
+            time_rect = pygame.Rect(320, 550, 170, 65)  # Define a rectangle for the "hold" box
+            pygame.draw.rect(screen, Colors.DARK_GREY, time_rect, 0, 10)
+
+            pygame.draw.rect(screen, Colors.DARK_GREY, score_rect, 0, 10)
             screen.blit(score_value_surface, score_value_surface.get_rect(centerx=score_rect.centerx, centery=score_rect.centery))
-            pygame.draw.rect(screen, Colors.LIGHT_BLUE, next_rect, 0, 10)
+            pygame.draw.rect(screen, Colors.DARK_GREY, next_rect, 0, 10)
             self.draw(screen)
 
             time_font = pygame.font.Font(None, 30)
-            time_text = time_font.render(f"Time: {self.elapsed_time}", True, Colors.WHITE)
-            screen.blit(time_text, (320, 555))
+            time_text = time_font.render(f"Time: {self.elapsed_time}", True, Colors.ORANGE)
+            screen.blit(time_text, (330, 555))
 
             lines_font = pygame.font.Font(None, 30)
-            lines_cleared_text = lines_font.render(f"Lines cleared: {self.lines_cleared}", True, Colors.WHITE)    # Use the lines_cleared variable
-            screen.blit(lines_cleared_text, (320, 590))
+            lines_cleared_text = lines_font.render(f"{self.lines_cleared}/40", True, Colors.ORANGE)    # Use the lines_cleared variable
+            screen.blit(lines_cleared_text, (330, 590))
 
             pygame.display.update()
             clock.tick(FPS)

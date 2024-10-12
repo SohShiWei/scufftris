@@ -5,28 +5,27 @@ vec = pygame.math.Vector2
 class Colors:
     # Original Colors
     DARK_GREY = (26, 31, 40)
-    GREEN = (0, 255, 107)
-    RED = (251, 50, 40)
-    ORANGE = (255, 152, 0)
-    YELLOW = (255, 245, 2)
-    PURPLE = (159, 46, 255)
-    CYAN = (0, 255, 233)
-    BLUE = (0, 83, 255)
-    WHITE = (255, 255, 255)
-    DARK_BLUE = (44, 44, 127)
-    LIGHT_BLUE = (59, 85, 162)
-    # Additional Colors
-    CREAM = (254, 250, 224)
-    LIGHT_CREAM = (254, 252, 235)
+    GREEN = (2, 156, 84)
+    ORANGE = (245, 91, 27)
+    BLUE = (163, 230, 238)
+    PURPLE = (217, 199, 249)
+    YELLOW = (249, 251, 83)
     PINK = (255, 164, 208)
     GREY = (225, 225, 225)
     BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
+    # Additional Colors
+    CREAM = (254, 250, 224)
+    LIGHT_CREAM = (254, 252, 235)
+    GREY = (225, 225, 225)
+    BLACK = (0, 0, 0)
     LIGHT_RED = (255, 102, 102)
+    TLIGHT_BLUE = (59, 85, 162,128)
 
     @classmethod
     def get_cell_colors(cls):
         # Accessed by block.py and grid.py to return board and tetromino colors
-        return [cls.DARK_GREY, cls.BLUE, cls.ORANGE, cls.CYAN, cls.YELLOW, cls.GREEN, cls.PURPLE, cls.RED]
+        return [cls.DARK_GREY, cls.GREEN, cls.ORANGE, cls.YELLOW, cls.PURPLE, cls.YELLOW, cls.PINK, cls.LIGHT_RED]
 
 class Position:
     def __init__(self, row, column):
