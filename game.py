@@ -66,6 +66,8 @@ class Game:
                             self.hard_drop()
                         if event.key == controls['rotate']:
                             self.rotate()
+                        if event.key == controls['rotate_ccw']:
+                            self.rotate_counterclockwise()   
                         if event.key == controls['hold']:
                             self.hold()
                     if self.game_over == True:  # Reset the game if it's over
@@ -234,6 +236,14 @@ class Game:
             self.current_block.undo_rotation()  # Undo the rotation if it doesn't fit
         else:
             self.rotate_sound.play()  # Play the rotate sound if the rotation was successful
+            
+    def rotate_counterclockwise(self):
+        # Rotates the current block and checks if it fits
+        self.current_block.rotate_counterclockwise()
+        if self.block_inside(self.current_block) == False or self.block_fits(self.current_block) == False:
+            self.current_block.undo_rotation()  # Undo the rotation if it doesn't fit
+        else:
+            self.rotate_sound.play()  # Play the rotate sound if the rotation was successful       
 
     def block_inside(self, block):
         # Checks if the current block is completely within the grid boundaries

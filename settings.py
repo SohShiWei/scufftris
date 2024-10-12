@@ -106,6 +106,7 @@ default_controls = {
     'right': pygame.K_d,
     'down': pygame.K_s,
     'rotate': pygame.K_w,
+    'rotate_ccw': pygame.K_q,
     'hard_drop': pygame.K_SPACE,
     'hold': pygame.K_e
 }

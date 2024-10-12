@@ -11,11 +11,13 @@ class Block:
         self.column_offset = 0  # Horizontal offset for positioning the block in the grid
         self.rotation_state = 0  # Current rotation state of the block
         self.colors = Colors.get_cell_colors()  # Get the colors for the block from the Colors class
+        self.positions = []
 
     def move(self, rows, columns):
         # Move the block by a specified number of rows and columns.
         self.row_offset += rows  # Update the vertical position
         self.column_offset += columns  # Update the horizontal position
+        self.update_positions()
 
     def get_cell_positions(self):
         # Get the current positions of the block's cells based on its rotation state and offsets.
@@ -30,12 +32,22 @@ class Block:
         return moved_tiles  # Return the list of updated positions
 
     def rotate(self):
-        # Rotate the block to the next state.
-        self.rotation_state += 1  # Increment the rotation state
-        if self.rotation_state == len(self.cells):
-            # Reset to 0 if the rotation state exceeds the number of defined states.
-            self.rotation_state = 0
-
+        # Rotate the block clockwise
+        self.rotation_state = (self.rotation_state + 1) % len(self.cells)
+        self.update_positions()
+        
+    def rotate_counterclockwise(self):
+        # Rotate block counter-clockwise
+        self.rotation_state = (self.rotation_state - 1) % len(self.cells)
+        self.update_positions()
+        
+    def update_positions(self):
+        # Update the positions based on the current rotation state
+        self.positions = [
+            Position(p.row + self.row_offset, p.column + self.column_offset)
+            for p in self.cells[self.rotation_state]
+        ]
+        
     def undo_rotation(self):
         # Revert the block's rotation to the previous state.
         self.rotation_state -= 1  # Decrement the rotation state
