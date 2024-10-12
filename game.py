@@ -26,9 +26,15 @@ class Game:
         
         # Load sounds for rotating blocks and clearing rows
         self.rotate_sound = pygame.mixer.Sound("Sounds/rotate.wav")
-        self.clear_sound = pygame.mixer.Sound("Sounds/clear.ogg")
-        self.hard_drop_sound = pygame.mixer.Sound("Sounds/harddrop.mp3")
-    
+        self.tetris_sound = pygame.mixer.Sound("Sounds/success.wav")
+        self.lock_block_sound = pygame.mixer.Sound("Sounds/lockbutton.wav")
+        self.hold_sound = pygame.mixer.Sound("Sounds/whoosh.wav")
+        self.clear_sound = pygame.mixer.Sound("Sounds/clear.wav")
+        self.tetris_sound = pygame.mixer.Sound("Sounds/success.wav")
+        
+        # Assign a dedicated channel for line clear sounds
+        self.line_clear_channel = pygame.mixer.Channel(1)
+        
         # Load and play background music on loop
         pygame.mixer.music.load("Sounds/OriginalTetristheme.mp3")
         pygame.mixer.music.play(-1)  # -1 means the music loops indefinitely
@@ -159,12 +165,16 @@ class Game:
     def update_score(self, lines_cleared, move_down_points):
         # Updates the score based on the number of lines cleared and points for moving blocks down
         if lines_cleared == 1:
+            self.line_clear_channel.play(self.clear_sound)
             self.score += 100
         elif lines_cleared == 2:
+            self.line_clear_channel.play(self.clear_sound)
             self.score += 300
         elif lines_cleared == 3:
+            self.line_clear_channel.play(self.clear_sound)
             self.score += 600
         elif lines_cleared == 4:
+            self.line_clear_channel.play(self.tetris_sound)
             self.score += 1200
         self.score += move_down_points  # Add points for moving blocks down
 
@@ -225,8 +235,6 @@ class Game:
         # Once the block can no longer move down, lock it in place
         self.lock_block()
         
-        # Play the hard drop sound and update the score
-        self.hard_drop_sound.play()
         self.update_score(0, 10)  # Add score for the hard drop
             
     def lock_block(self):
@@ -235,8 +243,7 @@ class Game:
         for position in tiles:
             if self.grid.is_inside(position.row, position.column):
                 self.grid.grid[position.row][position.column] = self.current_block.id
-            # if 0 <= popositionssition.row < len(self.grid.grid) and 0 <= position.column < len(self.grid.grid[0]):
-            #     self.grid.grid[position.row][position.column] = self.current_block.id
+                self.lock_block_sound.play()
                     
         # Prepare the next block and reset necessary variables
         self.current_block = self.next_block
@@ -247,7 +254,6 @@ class Game:
         # Clear full rows and update score
         rows_cleared = self.grid.clear_full_rows()
         if rows_cleared > 0:
-            self.clear_sound.play()
             self.update_score(rows_cleared, 0)
 
         # Check if the new block fits; if not, the game is over
@@ -352,10 +358,17 @@ class Game:
             self.hold_block = self.current_block
             self.current_block = self.next_block
             self.next_block = self.get_random_block()
+            self.hold_sound.play()
+            
         else:
             # Swap the current block
             self.hold_block, self.current_block = self.current_block, self.hold_block
+            self.hold_sound.play()
             
+        # Reset rotation state of block to default (0)
+        self.hold_block.rotation_state = 0 
+        self.hold_block.update_positions() # Update positions to reflect the default rotation state
+   
         # Reset position of the block    
         self.hold_block.row_offset = 0  # Reset the position of the block when it comes out of hold
         self.hold_block.column_offset = 3  # Center it horizontally

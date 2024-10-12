@@ -5,6 +5,15 @@ vec = pygame.math.Vector2
 class Colors:
     # Original Colors
     DARK_GREY = (26, 31, 40)
+    # Tetromino Colors
+    TGREEN = (0, 200, 0)          # Bright green for high visibility
+    TRED = (255, 0, 0)            # Bright red, easy to spot
+    TORANGE = (255, 128, 0)       # Highly saturated orange
+    TYELLOW = (255, 215, 0)       # Bold yellow, good for contrast
+    TPURPLE = (153, 0, 204)       # Vivid purple, stands out well
+    TCYAN = (0, 255, 255)         # Bright cyan, high contrast
+    TBLUE = (0, 0, 255)           # Bright blue, easy to distinguish
+    # GUI Colors
     GREEN = (2, 156, 84)
     ORANGE = (245, 91, 27)
     BLUE = (163, 230, 238)
@@ -25,8 +34,8 @@ class Colors:
     @classmethod
     def get_cell_colors(cls):
         # Accessed by block.py and grid.py to return board and tetromino colors
-        return [cls.DARK_GREY, cls.GREEN, cls.ORANGE, cls.YELLOW, cls.PURPLE, cls.YELLOW, cls.PINK, cls.LIGHT_RED]
-
+        return [cls.DARK_GREY, cls.TBLUE, cls.TORANGE, cls.TCYAN, cls.TYELLOW, cls.TGREEN, cls.TPURPLE, cls.TRED]
+    
 class Position:
     def __init__(self, row, column):
         # Initialize a Position object with row and column attributes.
@@ -89,7 +98,7 @@ move_delay = 100  # Delay (in milliseconds) to prevent continuous movement when 
 game_over = False
 target_lines = 40
 time_limit = 120000
-speed_increment_threshold = 500
+speed_increment_threshold = 1000
 # Initialize timers for controlling movement (left, right, down)
 move_left_timer = 0
 move_right_timer = 0

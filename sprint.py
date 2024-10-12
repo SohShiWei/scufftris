@@ -24,23 +24,31 @@ class Sprint(Game):
         self.current_block = self.get_random_block()  # Start with a new block
         self.next_block = self.get_random_block()  # Prepare the next block
         self.score = 0  # Reset score
-        self.start_time= pygame.time.get_ticks()
+        self.start_time = pygame.time.get_ticks()
         self.pause_time = 0  # Track the accumulated pause time
         self.pause_start_time = 0  # Track when the pause started
         self.game_ended = False  # Reset the end game state
         self.game_over = False
         self.paused = False  # Unpause the game
         self.time_limit = time_limit
+        self.current_speed = self.speed  # Reset current speed to the initial speed
+
+        # Set timer based on initial speed
+        pygame.time.set_timer(pygame.USEREVENT, self.speed)  # Reset timer to initial speed
         
     def update_score(self, lines_cleared, move_down_points):
         # Updates the score based on the number of lines cleared and points for moving blocks down
         if lines_cleared == 1:
+            self.line_clear_channel.play(self.clear_sound)
             self.score += 100
         elif lines_cleared == 2:
+            self.line_clear_channel.play(self.clear_sound)
             self.score += 300
         elif lines_cleared == 3:
+            self.line_clear_channel.play(self.clear_sound)
             self.score += 600
         elif lines_cleared == 4:
+            self.line_clear_channel.play(self.clear_sound)
             self.score += 1200
         self.score += move_down_points  # Add points for moving blocks down  
         
@@ -56,9 +64,9 @@ class Sprint(Game):
         font = pygame.font.Font(FONT_PATH, 50)
         
         if due_to_time:   
-            game_over_text = font.render("TIME'S UP!", True, Colors.RED)
+            game_over_text = font.render("TIME'S UP!", True, Colors.TRED)
         else:
-            game_over_text = font.render("GAME OVER!", True, Colors.RED)
+            game_over_text = font.render("GAME OVER!", True, Colors.TRED)
             
         score_text = font.render(f"FINAL SCORE: {self.score}", True, Colors.ORANGE)
         
@@ -143,6 +151,7 @@ class Sprint(Game):
                 if (keys[controls['down']]) and current_time - move_down_timer > move_delay:
                     self.move_down()
                     self.update_score(0, 2)
+                    move_down_timer = current_time
 
             # Adjust speed based on score
             if self.score // self.speed_increment_threshold > 0:

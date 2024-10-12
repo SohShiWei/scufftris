@@ -27,7 +27,7 @@ class Menus:
             screen.blit(title_text, title_rect)
             
             # Menu buttons
-            play_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.35), text_input="SURVIVOR", font=pygame.font.Font(FONT_PATH, 50), base_color=Colors.GREEN, hovering_color="red")
+            play_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.35), text_input="SURVIVAL", font=pygame.font.Font(FONT_PATH, 50), base_color=Colors.GREEN, hovering_color="red")
             clear40_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.45), text_input="40 LINES", font=pygame.font.Font(FONT_PATH, 50), base_color=Colors.GREEN, hovering_color="red")
             sprint_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.55), text_input="SPRINT", font=pygame.font.Font(FONT_PATH, 50), base_color=Colors.GREEN, hovering_color="red")
             settings_button = Button(image=None, pos=(screen_width * 0.5, screen_height * 0.80), text_input="SETTINGS", font=pygame.font.Font(FONT_PATH, 50), base_color=Colors.PINK, hovering_color="red")
@@ -214,7 +214,10 @@ class Menus:
                         return "restart"
                     if controls_button.checkForInput(mouse_pos):
                         pygame.event.clear()
-                        return "controls"
+                        game_snapshot = screen.copy()
+                        Menus().controls_menu(screen, controls, screen_width, screen_height)
+                        screen.blit(game_snapshot, (0, 0))
+                        continue
                     if main_menu_button.checkForInput(mouse_pos):
                         pygame.event.clear()
                         return "main_menu"

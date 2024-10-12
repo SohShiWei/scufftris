@@ -18,12 +18,16 @@ class clear40(Game):
     def update_score(self, lines_cleared, move_down_points):
         # Updates the score based on the number of lines cleared and points for moving blocks down
         if lines_cleared == 1:
+            self.line_clear_channel.play(self.clear_sound)
             self.score += 100
         elif lines_cleared == 2:
+            self.line_clear_channel.play(self.clear_sound)
             self.score += 300
         elif lines_cleared == 3:
+            self.line_clear_channel.play(self.clear_sound)
             self.score += 600
         elif lines_cleared == 4:
+            self.line_clear_channel.play(self.tetris_sound)
             self.score += 1200
         self.lines_cleared += lines_cleared  # Update lines cleared count
         self.score += move_down_points  # Add points for moving blocks down
@@ -185,11 +189,11 @@ class clear40(Game):
             self.draw(screen)
 
             time_font = pygame.font.Font(None, 30)
-            time_text = time_font.render(f"Time: {self.elapsed_time}", True, Colors.ORANGE)
+            time_text = time_font.render(f"Time: {self.elapsed_time} s", True, Colors.ORANGE)
             screen.blit(time_text, (330, 555))
 
             lines_font = pygame.font.Font(None, 30)
-            lines_cleared_text = lines_font.render(f"{self.lines_cleared}/40", True, Colors.ORANGE)    # Use the lines_cleared variable
+            lines_cleared_text = lines_font.render(f"Lines: {self.lines_cleared}/{target_lines}", True, Colors.ORANGE)    # Use the lines_cleared variable
             screen.blit(lines_cleared_text, (330, 590))
 
             pygame.display.update()

@@ -71,7 +71,7 @@ class Block:
         if shadow:
             # Create a transparent surface for the shadow block
             shadow_surface = pygame.Surface((self.cell_size * len(tiles), self.cell_size * len(tiles)), pygame.SRCALPHA)
-            shadow_color = (self.colors[self.id][0], self.colors[self.id][1], self.colors[self.id][2], 25)  # Semi-transparent shadow
+            shadow_color = (self.colors[self.id][0], self.colors[self.id][1], self.colors[self.id][2], 75)  # Semi-transparent shadow
 
             for tile in tiles:
                 # Create the rectangle for each tile
