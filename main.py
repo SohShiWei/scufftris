@@ -14,9 +14,8 @@ pygame.display.set_caption("Python Tetris")  # Window title
 # Initialize 
 game = Game() 
 menus = Menus() 
-clear40 = clear40(target_lines)
 sprint = Sprint()
-
+clears = clear40(target_lines)
 # Game loop control
 current_page = "menu" # Start in the Main menu
 
@@ -31,8 +30,8 @@ while True:
         game.play(screen)  # Start the game (normal)
         current_page = "menu" 
     elif current_page == "clear40":  
-        clear40.reset()
-        clear40.play(screen) # Start the game (40 lines)
+        clears.reset()   
+        clears.play(screen) # Start the game (40 lines)
         current_page = "menu"
     elif current_page == "sprint":  
         sprint.reset()
