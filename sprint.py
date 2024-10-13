@@ -49,7 +49,7 @@ class Sprint(Game):
             self.line_clear_channel.play(self.clear_sound)
             self.score += 600
         elif lines_cleared == 4:
-            self.line_clear_channel.play(self.clear_sound)
+            self.line_clear_channel.play(self.tetris_sound)
             self.score += 1200
         self.score += move_down_points  # Add points for moving blocks down  
         
