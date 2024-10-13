@@ -34,6 +34,7 @@ class Game:
         
         # Assign a dedicated channel for line clear sounds
         self.line_clear_channel = pygame.mixer.Channel(1)
+        self.block_lock_channel = pygame.mixer.Channel(1)
         
         # Load and play background music on loop
         pygame.mixer.music.load("Sounds/OriginalTetristheme.mp3")
@@ -246,8 +247,8 @@ class Game:
         for position in tiles:
             if self.grid.is_inside(position.row, position.column):
                 self.grid.grid[position.row][position.column] = self.current_block.id
-                self.lock_block_sound.play()
-                    
+                self.line_clear_channel.play(self.lock_block_sound)
+
         # Prepare the next block and reset necessary variables
         self.current_block = self.next_block
         self.next_block = self.get_random_block()
