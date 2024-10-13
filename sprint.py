@@ -16,6 +16,7 @@ class Sprint(Game):
         self.speed_increment_threshold= speed_increment_threshold
         self.current_speed = self.speed  # Track current speed based on score
         self.game_ended = False
+        self.gamemode = 'sprint'
         
     def reset(self):
         # Resets the game to the initial state (empty grid, new blocks, reset score)
@@ -99,8 +100,8 @@ class Sprint(Game):
         # Rectangles for positioning the score and next block sections
         score_rect = pygame.Rect(320, 55, 170, 60)  # Score box on the right of the screen
         next_rect = pygame.Rect(320, 150, 170, 170)  # Next block preview box
-        
-        while not self.game_over and not self.game_ended:
+        while True:
+        # while not self.game_over and not self.game_ended:
             
             current_time = pygame.time.get_ticks()
             
@@ -126,7 +127,16 @@ class Sprint(Game):
                             self.paused = False
                             self.pause_time += pygame.time.get_ticks() - self.pause_start_time  # Add duration of the pause to pause_time
                             self.pause_start_time = 0  # Reset pause start time
-
+                    if event.key == pygame.K_r and self.game_ended:  # Restart game if 'R' is pressed on win screen
+                        self.reset()
+                        self.win = False    # Reset the win condition
+                        self.starting = pygame.time.get_ticks()    # Restart the timer
+                        self.pause_time = 0     #Reset pause time
+                    if event.key == pygame.K_q and self.game_ended:  # Return to main menu on 'Q'
+                        pygame.event.clear()
+                        self.reset()
+                        self.win = False
+                        return
                     if not self.paused and not self.game_over:
                         if event.key == controls['hard_drop']:
                             self.hard_drop()
@@ -137,10 +147,10 @@ class Sprint(Game):
                         if event.key == controls['hold']:
                             self.hold()  
                             
-                if event.type == GAME_UPDATE and not self.paused and not self.game_over:
+                if event.type == GAME_UPDATE and not self.paused and not self.game_over and not self.game_ended:
                     self.move_down()
 
-            if not self.paused and not self.game_over:
+            if not self.paused and not self.game_over and not self.game_ended:
                 keys = pygame.key.get_pressed()
                 if (keys[controls['left']]) and current_time - move_left_timer > move_delay:
                     self.move_left()
@@ -184,8 +194,8 @@ class Sprint(Game):
                 
             # Determine the reason for ending the game and display the appropriate message
             if self.game_ended:
-                self.end_game(screen, due_to_time=True)
-                return
+                Menus().display_win(screen,self.gamemode,self.score,DISPLAY_WIDTH, DISPLAY_HEIGHT)
+                continue
             if self.game_over:  # If the game is over, display the "GAME OVER" text
                 back = Menus().gameover(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT,self.score)
                 self.reset()

@@ -113,12 +113,13 @@ class Game:
                             self.lock_block()  # Lock the block in place if the delay has passed**
                             move_down_timer = current_time
 
-            if self.game_over:  # If the game is over, display the "GAME OVER" text
-                self.game_over = Menus().gameover(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT,self.score)
+            if self.game_over:      # If the game is over, display the "GAME OVER" text
+                back = Menus().gameover(screen, DISPLAY_WIDTH, DISPLAY_HEIGHT,self.score)
                 self.reset()
                 self.game_over = False
-                return
-
+                if back == True:
+                    return
+                
             if self.paused:
                 # Display pause menu and handle interations
                 menu_action = Menus().pause_menu(screen, speed, move_delay, DISPLAY_WIDTH, DISPLAY_HEIGHT)

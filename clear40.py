@@ -9,6 +9,7 @@ class clear40(Game):
     
     def __init__(self, target_lines):
         super().__init__()  # Call the initializer of the Game class
+        self.gamemode = 'clear40'
         self.target_lines = target_lines  # Number of lines to clear
         self.elapsed_time = 0  # Timer starts at 0
         self.game_over = False  # Initialize game over status
@@ -43,15 +44,6 @@ class clear40(Game):
         self.elapsed_time = 0
         self.starting = pygame.time.get_ticks()
         self.lines_cleared = 0
-
-    def display_win(self, screen):  # Display the win screen 
-        font = pygame.font.Font(None, 74)
-        win_text = font.render("You Win!", True, Colors.GREEN)
-        screen.blit(win_text, (DISPLAY_WIDTH // 2 - 105, DISPLAY_HEIGHT // 2 - 50))
-
-        font = pygame.font.Font(None, 36)
-        restart_text = font.render("Press R to Retry | Q to Main Menu", True, Colors.WHITE)
-        screen.blit(restart_text, (DISPLAY_WIDTH // 2 - 195, DISPLAY_HEIGHT // 2 + 20))
         
     def play(self, screen):     # Main game loop (runs continuously)
         global speed, click_delay, move_delay, move_left_timer, move_right_timer, move_down_timer, last_click_time, controls
@@ -143,9 +135,9 @@ class clear40(Game):
                 
             
             if self.win:    # If the game is over, display the "YOU WIN" text
-                self.display_win(screen)
-                pygame.display.update()
-                clock.tick(FPS)
+                Menus().display_win(screen,self.gamemode,self.elapsed_time,DISPLAY_WIDTH, DISPLAY_HEIGHT)
+                # pygame.display.update()
+                # clock.tick(FPS)
                 continue  
 
             if self.paused:

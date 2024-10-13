@@ -153,6 +153,64 @@ class Menus:
 
             # Update display
             pygame.display.update()
+    
+    def display_win(self, screen, gamemode, score ,screen_width, screen_height):  # Display the win screen 
+        # # Create a semi-transparent overlay
+        # overlay = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
+        # overlay.fill((0, 0, 255, 10))  # Semi-transparent blue
+        # # Blit the overlay
+        # screen.blit(overlay, (0, 0))
+        font = pygame.font.Font(FONT_PATH, 36)
+
+        if gamemode == 'clear40':
+            minutes = score // 60
+            seconds = score % 60
+            title_font = pygame.font.Font(FONT_PATH, 100)
+            # Create shadow effect by rendering the title slightly offset
+            title_shadow = title_font.render("YOU WIN!", True, Colors.BLACK)
+            titleshadow_rect = title_shadow.get_rect(center=(screen_width * 0.5+5, screen_height * 0.3+5))
+            screen.blit(title_shadow, titleshadow_rect)  
+            # Render the title
+            title_text = title_font.render("YOU WIN!", True, Colors.GREEN)
+            title_rect = title_text.get_rect(center=(screen_width * 0.5, screen_height * 0.3))
+            screen.blit(title_text, title_rect)
+
+
+            minutesshadow_text = font.render(f'{minutes}MINUTES {seconds}SECONDS', True, Colors.BLACK)
+            screen.blit(minutesshadow_text, (DISPLAY_WIDTH // 2 - 205, DISPLAY_HEIGHT // 2 - 55))
+            minutes_text = font.render(f'{minutes}MINUTES {seconds}SECONDS', True, Colors.GREEN)
+            screen.blit(minutes_text, (DISPLAY_WIDTH // 2 - 200, DISPLAY_HEIGHT // 2 - 50))
+
+        elif gamemode == 'sprint':
+            title_font = pygame.font.Font(FONT_PATH, 90)
+
+            # Create shadow effect by rendering the title slightly offset
+            title_shadow = title_font.render("TIMES UP!", True, Colors.BLACK)
+            titleshadow_rect = title_shadow.get_rect(center=(screen_width * 0.5+5, screen_height * 0.3+5))
+            screen.blit(title_shadow, titleshadow_rect)  
+            # Render the title
+            title_text = title_font.render("TIMES UP!", True, Colors.GREEN)
+            title_rect = title_text.get_rect(center=(screen_width * 0.5, screen_height * 0.3))
+            screen.blit(title_text, title_rect)
+
+            scoreshadow_text = font.render(f'SCORE: {str(score)}', True, Colors.BLACK)
+            screen.blit(scoreshadow_text, (DISPLAY_WIDTH // 2 - 205, DISPLAY_HEIGHT // 2 - 55))
+            score_text = font.render(f'SCORE: {str(score)}', True, Colors.GREEN)
+            screen.blit(score_text, (DISPLAY_WIDTH // 2 - 200, DISPLAY_HEIGHT // 2 - 50))
+
+        # Render shadow and main text for restart instructions
+        restartshadow_text_r = font.render('PRESS R TO RETRY', True, Colors.BLACK)
+        screen.blit(restartshadow_text_r, (DISPLAY_WIDTH // 2 - 205, DISPLAY_HEIGHT // 2 + 25))
+        restart_text_r = font.render('PRESS R TO RETRY', True, Colors.GREEN)
+        screen.blit(restart_text_r, (DISPLAY_WIDTH // 2 - 200, DISPLAY_HEIGHT // 2 + 20))
+
+        restartshadow_text_q = font.render('Q TO MAIN MENU', True, Colors.BLACK)
+        screen.blit(restartshadow_text_q, (DISPLAY_WIDTH // 2 - 205, DISPLAY_HEIGHT // 2 + 65))
+        restart_text_q = font.render('Q TO MAIN MENU', True, Colors.GREEN)
+        screen.blit(restart_text_q, (DISPLAY_WIDTH // 2 - 200, DISPLAY_HEIGHT // 2 + 60))
+
+        pygame.display.update()
+
         
     def pause_menu(self, screen, speed, move_delay, screen_width, screen_height):
         
@@ -161,13 +219,11 @@ class Menus:
         def draw_buttons():
             
             rect_surface = pygame.Surface((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.SRCALPHA)
-            rect_surface.fill(Colors.TLIGHT_BLUE)  # Semi-transparent red
+            rect_surface.fill(Colors.TLIGHT_BLUE)  # Semi-transparent blue
 
             # Blit the surface onto the main screen
             screen.blit(rect_surface, (0,0))
             pygame.display.flip()
-
-
             
             # Render title with outline or shadow for a more appealing look
             title_font = pygame.font.Font(FONT_PATH, 100)
